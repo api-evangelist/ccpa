@@ -1,15 +1,32 @@
+aid: ccpa
+url: >-
+  https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
 name: CCPA
-description: California Consumer Privacy Act - A state statute intended to enhance
-  privacy rights and consumer protection for residents of California, USA. Provides
-  consumers with rights to know what personal information is collected, delete personal
-  data, opt-out of data sales, and non-discrimination for exercising privacy rights.
-url: https://oag.ca.gov/privacy/ccpa
 tags:
-- Privacy
-- Compliance
-- Data Protection
-- Legal
-created: '2025'
-modified: '2025'
+  - Privacy
+  - Compliance
+  - Data Protection
+  - Legal
+  - California
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+access: 3rd-Party
+created: '2025-01-01'
+modified: '2026-03-16'
+position: Consumer
+description: >-
+  The California Consumer Privacy Act (CCPA) is a state statute intended to
+  enhance privacy rights and consumer protection for residents of California.
+  It provides consumers with rights to know what personal information is
+  collected, delete personal data, opt-out of data sales, and
+  non-discrimination for exercising privacy rights.
 apis: []
-common: []
+common:
+  - type: Website
+    url: https://oag.ca.gov/privacy/ccpa
+  - type: Documentation
+    url: https://oag.ca.gov/privacy/ccpa
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+specificationVersion: '0.19'
