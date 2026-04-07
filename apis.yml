@@ -3,11 +3,11 @@ url: >-
   https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
 name: CCPA
 tags:
-  - Privacy
+  - California
   - Compliance
   - Data Protection
   - Legal
-  - California
+  - Privacy
 type: Index
 image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
 access: 3rd-Party
