@@ -105,6 +105,10 @@ apis:
       required to register under Civil Code section 1798.99.80, providing
       a public list that consumers can use to submit opt-out requests.
 common:
+  - type: VulnerabilityDisclosure
+    url: security/ccpa-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/ccpa-domain-security.yml
   - type: Website
     url: https://oag.ca.gov/privacy/ccpa
   - type: Documentation
