@@ -10,6 +10,15 @@ tags:
   - Data Subject Rights
   - Legal
   - Privacy
+  - Regulations
+tags_raw:
+  - CPRA
+  - California
+  - Compliance
+  - Data Protection
+  - Data Subject Rights
+  - Legal
+  - Privacy
   - Regulation
 type: Index
 accessModel:
@@ -86,6 +95,10 @@ apis:
   - aid: ccpa:cppa-enforcement-resources
     name: California Privacy Protection Agency (CPPA) Resources
     tags:
+      - Enforcement
+      - Regulations
+      - Rulemaking
+    tags_raw:
       - Enforcement
       - Regulation
       - Rulemaking
