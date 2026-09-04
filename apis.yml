@@ -48,7 +48,7 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/ccpa.png
 access: 3rd-Party
 created: '2025-01-01'
 modified: '2026-04-23'
-position: Consumer
+position: Consuming
 description: >-
   The California Consumer Privacy Act (CCPA), amended by the California
   Privacy Rights Act (CPRA), is a state statute that grants California
