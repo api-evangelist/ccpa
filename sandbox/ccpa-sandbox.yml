@@ -1,0 +1,60 @@
+specification: API Commons Sandbox
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+  and openapi/ccpa-drop-databroker-api.yml servers[]
+description: >-
+  CalPrivacy publishes a sandbox for the DROP Data Broker API so a registered data broker
+  can rehearse the download / hash-match / upload cycle before touching real consumer
+  deletion requests. It opened 2026-04-02 alongside version 1.0.0 of the documentation.
+environments:
+  - name: Sandbox
+    base_url: https://api.drop.privacy.ca.gov/sandbox
+    declared_in: openapi servers[] (description "Sandbox")
+    key_required: true
+    key_issuance: >-
+      A distinct sandbox key, issued from SANDBOX ENVIRONMENT > ISSUE SANDBOX API KEY in
+      the DROP Data Broker Portal.
+    note: >-
+      The sandbox is a path prefix on the production host, not a separate domain — the
+      only difference in a request is the base path and the key.
+  - name: Production
+    base_url: https://api.drop.privacy.ca.gov
+    declared_in: openapi servers[] (description "Production")
+    key_required: true
+    key_issuance: >-
+      Home > Consumer Deletion Lists > select list(s) > Save > API Key tab > Get a new API key.
+access_prerequisite: >-
+  Sandbox access still requires a DROP Data Broker Portal account, which requires
+  registration as a California data broker and payment of the annual fee. It is not an
+  open/anonymous developer sandbox.
+test_data:
+  published_fixtures: false
+  detail: >-
+    NOT PUBLISHED. CalPrivacy does not publish test identifiers, sample hashed values,
+    fixture CSVs, or a downloadable sample ZIP. The documentation does not state what data
+    the sandbox serves. No test values are recorded here because none were published —
+    do not assume any.
+  what_is_published:
+    - >-
+      The standardization + SHA-256/Base64 hashing rules a broker must apply, with worked
+      rules per identifier type, at
+      https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+    - >-
+      The file naming convention (YYYYMMDD_DataBrokerId_DataType[_OptionalSuffix].csv) and
+      the required upload CSV header `Id,Status`.
+    - The four valid status codes 2 (Exempted), 3 (Deleted), 4 (Opted out), 5 (Not found).
+time_simulation:
+  supported: false
+  detail: No test clocks or time-simulation tooling is published.
+portal:
+  url: https://databroker.drop.privacy.ca.gov/
+  note: >-
+    The portal ships an in-browser API sandbox surface (the app serves
+    css/apisandbox.*.css with docs-endpoint / sandbox-key styling), but it sits behind the
+    authenticated data broker login and could not be read anonymously.

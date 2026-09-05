@@ -1,0 +1,81 @@
+specification: API Commons MCP
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: derived
+source: openapi/ccpa-drop-databroker-api.yml
+status: candidate
+description: >-
+  No Model Context Protocol server is published for any surface in this record. CalPrivacy
+  ships no hosted MCP endpoint and no stdio package; searches of npm and the provider's own
+  documentation found none, and no /.well-known/ document on any host advertises one. The
+  tool list below is a CANDIDATE derived from the three real operations in the CalPrivacy
+  OpenAPI. It is not an agent surface anyone can call today.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: api-key
+  auth_detail: >-
+    Any future server would carry the X-API-KEY credential, which is issued only to a
+    registered California data broker after payment of the annual fee.
+  verified: derived
+search_evidence:
+  - probe: https://api.drop.privacy.ca.gov/.well-known/agent-card.json
+    status: 404
+  - probe: https://databroker.drop.privacy.ca.gov/.well-known/security.txt
+    status: 404
+  - probe: npm registry search for a CalPrivacy/DROP MCP package
+    result: none found
+tools:
+  - name: drop_download_deletion_lists
+    status: candidate
+    rest: [downloadData]
+    method: GET
+    path: /data/download
+    description: >-
+      Request or download the current ZIP archive of consumer deletion request data. Returns
+      application/zip when ready, 202 with Retry-After while the archive is being prepared,
+      and 200 with a JSON message when there is no new data.
+    input_schema_source: >-
+      Inherits the operation's parameters — the operation takes none; the response varies by
+      readiness state.
+    consequence: read
+  - name: drop_upload_status_responses
+    status: candidate
+    rest: [uploadData]
+    method: POST
+    path: /data/upload
+    description: >-
+      Upload CSV status response files (header `Id,Status`, Status one of 2/3/4/5) reporting
+      the action taken for each work item in a downloaded list.
+    input_schema_source: multipart/form-data with the field name `files`
+    consequence: write
+    reversal: drop_amend_status_responses
+    caution: >-
+      Reports a real-world action already taken. Status 3 (Deleted) asserts that a
+      consumer's non-exempt personal information has been deleted — an action this API
+      cannot undo.
+  - name: drop_amend_status_responses
+    status: candidate
+    rest: [uploadAmend]
+    method: POST
+    path: /data/amend
+    description: Correct or update previously submitted status responses.
+    input_schema_source: multipart/form-data with the field name `files`
+    consequence: write
+    note: >-
+      This is the reversal path for a prior upload. No amendment window is published — see
+      conventions/ccpa-conventions.yml reversibility.
+tool_count: 3
+gaps:
+  - >-
+    An MCP server over this API would be of limited value without file handling: both write
+    tools take multipart CSV uploads and the read tool returns a ZIP, none of which are
+    JSON tool payloads.
+  - >-
+    Credentialing is statutory. An agent cannot self-serve a key; a human must register the
+    organization as a California data broker and pay the annual fee first.

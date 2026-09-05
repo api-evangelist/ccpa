@@ -1,4 +1,4 @@
-generated: '2026-07-11'
+generated: '2026-09-05'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
@@ -10,13 +10,13 @@ hosts:
 - host: globalprivacycontrol.org
   https: true
   tls_version: TLSv1.3
-  cert_expires: Sep 22 23:56:52 2026 GMT
+  cert_expires: Nov 22 02:19:51 2026 GMT
   hsts: true
   hsts_max_age: 31556952
 - host: iabtechlab.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Aug  5 23:59:59 2026 GMT
+  cert_expires: Nov  4 23:59:59 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 domains:

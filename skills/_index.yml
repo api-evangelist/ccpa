@@ -1,0 +1,38 @@
+specification: Agent Skills Index
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+generated: '2026-09-05'
+method: generated
+source: >-
+  Authored from openapi/ccpa-drop-databroker-api.yml — every operationId referenced was
+  verified against the spec — plus conventions/, errors/, rate-limits/ and the CalPrivacy
+  technical specification pages probed 2026-09-05. CalPrivacy publishes no skills,
+  AGENTS.md or llms.txt of its own.
+description: >-
+  Packaged operating instructions for the one callable API in this record, the CalPrivacy
+  DROP Data Broker API. Both skills cover a statutory compliance flow with irreversible
+  real-world consequences, so each one states plainly what cannot be undone.
+api: ccpa:drop-data-broker-api
+skills:
+  - name: ccpa-process-deletion-requests
+    file: skills/ccpa-process-deletion-requests.md
+    summary: >-
+      Run one complete download / hash-match / report cycle: GET /data/download, apply the
+      published standardization and SHA-256 Base64 hashing rules, act, then POST
+      /data/upload with an Id,Status CSV.
+    operations: [downloadData, uploadData]
+    consequence: high
+    reversible: partially — the report can be amended, the deletion cannot
+  - name: ccpa-amend-status-responses
+    file: skills/ccpa-amend-status-responses.md
+    summary: >-
+      Correct a previously filed status via POST /data/amend, with the explicit caveat that
+      it reverses the report and not the deletion, and that no amendment window is published.
+    operations: [uploadAmend]
+    consequence: medium
+    reversible: yes — an amendment is itself amendable
+skill_count: 2
+operations_covered: 3
+operations_total: 3
+coverage: complete

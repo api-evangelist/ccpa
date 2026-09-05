@@ -1,0 +1,131 @@
+specification: API Commons Webhooks
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: >-
+  openapi/ccpa-drop-databroker-api.yml (the webhook contract is published in full inside
+  info.description of the CalPrivacy OpenAPI) and
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
+description: >-
+  CalPrivacy publishes a real webhook surface for the DROP Data Broker API but ships no
+  AsyncAPI document for it. The event catalog, HTTP headers, signing scheme and expected
+  response are documented verbatim inside the OpenAPI info.description; this artifact
+  captures that catalog as structured data. NOTHING HERE IS INVENTED — no AsyncAPI has
+  been authored on CalPrivacy's behalf.
+asyncapi_published: false
+asyncapi_url: null
+transport: https
+direction: provider-to-consumer
+configuration:
+  where: DROP Data Broker Portal > Notification settings
+  steps:
+    - Go to Notification settings in the Data Broker Portal.
+    - Toggle Webhook to Active.
+    - Enter your HTTPS endpoint URL.
+    - Save changes.
+  default_channel: email
+  detail: >-
+    Email notification is the default for all brokers; webhook delivery is optional and
+    per-broker configurable. Two events are email-only and cannot be delivered by webhook.
+security:
+  signing: HMAC-SHA256
+  secret: >-
+    A signing secret is generated when webhooks are enabled and shown once in the portal.
+    Rotatable from the portal.
+  signature_header: X-Webhook-Signature
+  signature_format: 'sha256=<hex digest>'
+  signing_string: '<X-Webhook-Timestamp>.<raw request body>'
+  verification:
+    - Read the raw request body exactly as received.
+    - Read X-Webhook-Timestamp.
+    - Build the signing string as `<timestamp>.<raw request body>`.
+    - Compute HMAC-SHA256 using the webhook signing secret.
+    - Compare the hex digest to X-Webhook-Signature after removing the `sha256=` prefix.
+    - Reject the request if the signature is invalid.
+  replay_protection: >-
+    Recommended by CalPrivacy: reject timestamps older than 5 minutes. Not enforced by the
+    protocol.
+headers:
+  - name: X-Webhook-Event-Id
+    description: Unique ID for the logical event.
+  - name: X-Webhook-Event-Type
+    description: Event type.
+  - name: X-Webhook-Delivery-Id
+    description: Unique ID for this delivery attempt.
+  - name: X-Webhook-Timestamp
+    description: UTC timestamp for the request.
+  - name: X-Webhook-Version
+    description: Webhook version (observed value in the published example, 1.0).
+  - name: X-Webhook-Signature
+    description: HMAC-SHA256 signature.
+payload:
+  content_type: application/json
+  schema:
+    type: object
+    required: [message]
+    properties:
+      message:
+        type: string
+        description: Message text.
+  note: >-
+    The body carries only a human-readable message. It does NOT carry the event type,
+    ids, or any resource payload — those are in the headers. A consumer must switch on
+    X-Webhook-Event-Type, not on the body.
+delivery:
+  expected_response: Any 2xx
+  preferred_response: 204 No Content
+  failure_handling: >-
+    DROP treats a non-2xx response as failed delivery and may retry. Retry count, backoff
+    and give-up policy are not published.
+events:
+  - name: download.ready
+    label: List Download Ready
+    when: Selected lists are ready for download; download package is ready.
+    email: default
+    webhook: optional
+    follow_up_operation: downloadData
+  - name: upload.received
+    label: Upload Confirmation
+    when: Your upload has been received and is being processed.
+    email: default
+    webhook: optional
+  - name: upload.processed
+    label: List Upload Processed
+    when: Your list has been processed and responses are available for review.
+    email: default
+    webhook: optional
+  - name: amendment.received
+    label: Amendment Confirmation
+    when: Your amendment upload has been received and is being processed.
+    email: default
+    webhook: optional
+    follow_up_operation: uploadAmend
+  - name: amendment.processed
+    label: Amendment Upload Processed
+    when: Your amendment list has been processed and is ready for review.
+    email: default
+    webhook: optional
+  - label: API Key Issued
+    name: null
+    when: An API key has been issued for your account.
+    email: default
+    webhook: n/a
+    note: Email only — no webhook event type is published for this notification.
+  - label: API Key Changed
+    name: null
+    when: A new API key has been issued; all previous keys have been deactivated.
+    email: default
+    webhook: n/a
+    note: Email only — no webhook event type is published for this notification.
+event_count: 7
+webhook_event_count: 5
+gaps:
+  - No AsyncAPI or JSON Schema document is published for these events.
+  - >-
+    The payload carries no event type or resource identifier, so the webhook is a
+    wake-up signal rather than a data-carrying event — a consumer must call
+    GET /data/download to learn what actually changed.
+  - Retry/backoff policy for failed deliveries is not published.

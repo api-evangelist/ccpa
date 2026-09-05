@@ -3,108 +3,55 @@ specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
 provider: CCPA (California Consumer Privacy Act)
 providerId: ccpa
+api: ccpa:drop-data-broker-api
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-04'
+modified: '2026-09-05'
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+description: >-
+  Published throttling behaviour for the CalPrivacy DROP Data Broker API. This artifact
+  replaces a 2026-05-04 bulk-sweep scaffold that carried invented X-RateLimit-* headers and
+  invented per-tier quotas for a provider that publishes neither. CalPrivacy documents the
+  EXISTENCE of throttling and a retry interval, but publishes no numeric limit.
 tags:
+  - CCPA
   - CPRA
-  - California
-  - Compliance
-  - Data Protection
-  - Data Subject Rights
-  - Legal
-  - Privacy
-  - Regulation
+  - Delete Act
+  - DROP
   - Rate Limiting
-  - Quotas
-  - Throttling
-description: Machine-readable rate limit definitions for the CCPA (California Consumer Privacy Act) API
-  surface. Captures per-tier quotas, burst behavior, response signaling, and recovery semantics. Defaults
-  are scaffold values to be replaced with published provider limits.
+limit_count: 0
+limits: []
 headers:
-  limit: X-RateLimit-Limit
-  remaining: X-RateLimit-Remaining
-  reset: X-RateLimit-Reset
+  limit: null
+  remaining: null
+  reset: null
   retryAfter: Retry-After
-  policy: RateLimit-Policy
-responseCodes:
-  throttled: 429
-  quotaExceeded: 429
-  serviceUnavailable: 503
-limits:
-  - tier: free
-    name: Free Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 10
-    burst: 20
-    timeFrame: minute
-    applies:
-      - Global Privacy Control (GPC) Specification
-      - IAB Tech Lab Global Privacy Platform (GPP)
-      - California Privacy Protection Agency (CPPA) Resources
-      - California Data Broker Registry
-  - tier: free
-    name: Free Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 1000
-    timeFrame: month
-    applies:
-      - Global Privacy Control (GPC) Specification
-      - IAB Tech Lab Global Privacy Platform (GPP)
-      - California Privacy Protection Agency (CPPA) Resources
-      - California Data Broker Registry
-  - tier: professional
-    name: Professional Tier Default
-    scope: api-key
-    metric: requests_per_minute
-    limit: 100
-    burst: 200
-    timeFrame: minute
-    applies:
-      - Global Privacy Control (GPC) Specification
-      - IAB Tech Lab Global Privacy Platform (GPP)
-      - California Privacy Protection Agency (CPPA) Resources
-      - California Data Broker Registry
-  - tier: professional
-    name: Professional Tier Monthly Quota
-    scope: api-key
-    metric: requests_per_month
-    limit: 100000
-    timeFrame: month
-    applies:
-      - Global Privacy Control (GPC) Specification
-      - IAB Tech Lab Global Privacy Platform (GPP)
-      - California Privacy Protection Agency (CPPA) Resources
-      - California Data Broker Registry
-  - tier: enterprise
-    name: Enterprise Negotiated Limit
-    scope: contract
-    metric: requests_per_minute
-    limit: 1000
-    burst: 5000
-    timeFrame: minute
-    applies:
-      - Global Privacy Control (GPC) Specification
-      - IAB Tech Lab Global Privacy Platform (GPP)
-      - California Privacy Protection Agency (CPPA) Resources
-      - California Data Broker Registry
-policies:
-  - name: Backoff Strategy
-    description: Clients should implement exponential backoff with jitter, honoring the Retry-After header
-      when present.
-  - name: Burst Handling
-    description: Short bursts above the steady-state limit are tolerated up to the documented burst ceiling
-      before throttling engages.
-  - name: Quota Reset
-    description: Monthly quotas reset at the start of each calendar month in UTC. Per-minute and per-second
-      windows reset on a sliding-window basis.
-  - name: Fair Use
-    description: Even on uncapped enterprise tiers, sustained usage that materially impacts shared infrastructure
-      may be subject to fair-use throttling.
-maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+header_note: >-
+  No X-RateLimit-* or RFC 9238 RateLimit-* headers are documented or observed. Retry-After
+  IS declared in the OpenAPI — but on the 202 "download package is being prepared" response
+  of GET /data/download, NOT on 429. There is therefore no runtime budget signal an agent
+  can read: a caller learns it is over the limit only by being refused.
+exhaustion:
+  status: 429
+  title: Too Many Requests
+  body: Not documented.
+  guidance: 'Wait 30 seconds and retry.'
+  source: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+polling:
+  operation: downloadData
+  status: 202
+  header: Retry-After
+  detail: >-
+    The intended call pattern is prepare-then-poll: GET /data/download returns 202 with
+    Retry-After while the ZIP is built, and the caller repeats the same GET. Respecting
+    Retry-After on 202 is the primary way to avoid the 429 path.
+concurrency:
+  detail: >-
+    Enforced by state, not by a counter. GET /data/download returns 409 "Previous download
+    is not complete" and POST /data/upload returns 409 "No active download is waiting for
+    responses", which serialises a broker to one active download/upload cycle at a time.
+notes: >-
+  Access is gated by statutory registration and an annual fee rather than by a usage tier,
+  so there is no free/paid limit ladder to record. See plans/ccpa-plans-pricing.yml.

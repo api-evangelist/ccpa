@@ -1,0 +1,138 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for the CalPrivacy DROP Data Broker API
+  version: 1.0.0
+x-provenance:
+  generated: '2026-09-05'
+  method: generated
+  extends: openapi/ccpa-drop-databroker-api.yml
+  source: >-
+    Derived from the artifacts in this repository (conventions, errors, rate-limits,
+    lifecycle, sandbox, asyncapi, authentication) and from the CalPrivacy technical
+    specification pages probed 2026-09-05. Applied as an Overlay so the harvested
+    CalPrivacy OpenAPI stays byte-for-byte verbatim.
+extends: openapi/ccpa-drop-databroker-api.yml
+actions:
+  - target: $.info
+    description: Link the human documentation set and record the artifact cross-links.
+    update:
+      x-documentation:
+        technical-specifications: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
+        getting-started: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+        integration-workflow: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/integration-workflow/
+        working-with-data: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+        api-operations: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+        reference: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/
+        fees-and-registration: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+        portal: https://databroker.drop.privacy.ca.gov/
+      x-artifacts:
+        conventions: conventions/ccpa-conventions.yml
+        errors: errors/ccpa-problem-types.yml
+        rate-limits: rate-limits/ccpa-rate-limits.yml
+        lifecycle: lifecycle/ccpa-lifecycle.yml
+        changelog: changelog/ccpa-changelog.yml
+        sandbox: sandbox/ccpa-sandbox.yml
+        authentication: authentication/ccpa-authentication.yml
+        webhooks: asyncapi/ccpa-drop-webhooks.yml
+        data-model: data-model/ccpa-data-model.yml
+        skills: skills/_index.yml
+      x-regulatory-basis:
+        statute: California Delete Act, Civil Code 1798.99.80 et seq.
+        regulations: CCR title 11, section 7600
+        regulator: California Privacy Protection Agency (CalPrivacy)
+        broker_processing_begins: '2026-08-01'
+  - target: $.info
+    description: >-
+      Record the runtime semantics an agent needs before it calls — measured, not asserted
+      by the provider.
+    update:
+      x-agent-notes:
+        idempotency: none
+        idempotency-detail: >-
+          No idempotency key on either mutating operation. Concurrency is constrained by
+          409 state gates, not by request deduplication. A retried upload is a new upload.
+        reversibility: documented
+        reversibility-detail: >-
+          POST /data/amend reverses a prior status report, but no amendment window is
+          published. The underlying deletion the report describes is NOT reversible.
+        rate-limit-signal: none
+        rate-limit-detail: >-
+          No X-RateLimit-* headers. 429 with published guidance "wait 30 seconds and retry".
+        error-format: custom
+        error-detail: >-
+          Not RFC 9457. 401 returns text/plain; other failures return MessageResponse or
+          UploadResponse JSON. A 202 upload can still contain rejected files.
+  - target: $.paths['/data/download'].get
+    description: Make the polling contract and the ambiguous 200 explicit.
+    update:
+      x-polling:
+        pattern: prepare-then-poll
+        not-ready: 202 with Retry-After
+        ready: 200 with Content-Type application/zip and Content-Disposition
+        empty: 200 with Content-Type application/json (MessageResponse)
+        conflict: 409 when a previous download is not complete
+        guidance: >-
+          Disambiguate a 200 by Content-Type, never by status code alone. Honor Retry-After
+          on 202 rather than polling on a fixed interval.
+      x-agentic-access:
+        action-class: read
+        consequence: none
+        reversible: n/a
+  - target: $.paths['/data/upload'].post
+    description: Flag the real-world consequence and the reversal path.
+    update:
+      x-agentic-access:
+        action-class: write
+        consequence: high
+        consequence-detail: >-
+          Reports an action already taken on a California consumer's personal information.
+          Status 3 (Deleted) asserts an irreversible deletion; misreporting is a compliance
+          exposure under the Delete Act, not merely a data error.
+        reversal-operation: uploadAmend
+        reversal-window: null
+        escalation: human-approval-recommended
+      x-validation:
+        content-type: multipart/form-data
+        field-name: files
+        file-type: CSV only
+        csv-header: 'Id,Status'
+        status-values: [2, 3, 4, 5]
+        partial-success: >-
+          A 202 means at least one file was accepted. Always read rejected[] — per-file
+          rejections travel inside a success response.
+  - target: $.paths['/data/amend'].post
+    description: Record the reversal semantics.
+    update:
+      x-agentic-access:
+        action-class: write
+        consequence: medium
+        reversal-operation: uploadAmend
+        reversal-window: null
+        note: >-
+          Corrects a prior status REPORT. It does not restore deleted personal information.
+      x-validation:
+        content-type: multipart/form-data
+        field-name: files
+        csv-header: 'Id,Status'
+  - target: $.components.securitySchemes.ApiKeyAuth
+    description: Record how the credential is actually obtained.
+    update:
+      x-issuance:
+        portal: https://databroker.drop.privacy.ca.gov/
+        prerequisite: >-
+          Registration as a California data broker and payment of the annual fee
+          ($6,000 for 2026, plus a payment-processing fee not to exceed 2.99%).
+        rotation: A new key deactivates all previous keys.
+        scoping: Scoped to the consumer deletion list types selected during setup.
+        sandbox-key: Issued separately from SANDBOX ENVIRONMENT > ISSUE SANDBOX API KEY.
+  - target: $.components.schemas.HashBase64
+    description: Record the standardization rules a caller must apply before hashing.
+    update:
+      x-hashing:
+        algorithm: SHA-256
+        input-encoding: UTF-8
+        output-encoding: Base64
+        composite:
+          NDZ: FirstName + LastName + DOB + ZIP
+          NameVIN: FirstName + LastName + VIN
+        docs: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/

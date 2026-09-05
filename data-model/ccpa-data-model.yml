@@ -1,0 +1,134 @@
+specification: API Commons Data Model
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: derived
+source: >-
+  openapi/ccpa-drop-databroker-api.yml (components.schemas and $ref graph), enriched from
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+description: >-
+  Entity graph of the CalPrivacy DROP Data Broker API. The unusual property of this model
+  is that the primary entities never travel as JSON — they are CSV ROWS inside a ZIP
+  archive, and the OpenAPI describes them as schemas anyway. The JSON schemas describe only
+  the upload receipt. Consumer identifiers are never transmitted in the clear: every
+  identifier is a SHA-256 hash, Base64 encoded.
+entities:
+  - name: DownloadedCSVRow
+    kind: csv-row
+    transport: A row in a CSV inside the ZIP returned by GET /data/download.
+    description: One consumer deletion work item handed to the data broker.
+    key: WorkItemId
+    relationships:
+      - type: has_one
+        target: HashBase64
+        via: the hashed consumer identifier column
+      - type: belongs_to
+        target: ListType
+        via: which CSV file in the archive the row came from
+  - name: RemovedCSVRow
+    kind: csv-row
+    transport: A row in the `Removed` CSV inside the same ZIP.
+    description: >-
+      An identifier that has been removed from the deletion list (for example, a consumer
+      cancelled the request). Removed is a FILE type, not a consumer deletion list type.
+    relationships:
+      - type: has_one
+        target: HashBase64
+        via: the hashed identifier column
+  - name: UploadCSVRow
+    kind: csv-row
+    transport: A row in the CSV a broker POSTs to /data/upload or /data/amend.
+    description: The status the broker is reporting for one work item.
+    required_header: 'Id,Status'
+    relationships:
+      - type: belongs_to
+        target: DownloadedCSVRow
+        via: Id (the WorkItemId echoed back)
+      - type: has_one
+        target: StatusCode
+        via: Status
+  - name: WorkItemId
+    kind: identifier
+    description: >-
+      The unit of correlation between a downloaded row and an uploaded status row. Added to
+      the documentation in version 1.2.0.
+  - name: HashBase64
+    kind: value
+    description: >-
+      A SHA-256 hash of a standardized consumer identifier, UTF-8 input, Base64 output.
+      This is the only form in which consumer personal information crosses the API.
+  - name: ListType
+    kind: enum
+    values: [NDZ, Email, Phone, MAID, NameVIN, CTVID]
+    description: >-
+      Consumer deletion list type. NDZ is a composite of FirstName + LastName + DOB + ZIP;
+      NameVIN is a composite of FirstName + LastName + VIN. MAID is a 32-character mobile
+      advertising id; CTVID is an 8-32 character connected-TV id.
+  - name: DataType
+    kind: enum
+    values: [NDZ, Email, Phone, MAID, NameVIN, CTVID, Removed]
+    description: >-
+      Superset of ListType used in DROP file names — adds `Removed`, which is a file type
+      rather than a deletion list type.
+    relationships:
+      - type: has_many
+        target: ListType
+        via: superset
+  - name: StatusCode
+    kind: enum
+    values: [2, 3, 4, 5]
+    description: >-
+      2 Exempted (match found, all personal information exempt); 3 Deleted (match found,
+      non-exempt personal information deleted); 4 Opted out (multiple consumers linked to
+      the same identifier, all opted out of sale or sharing); 5 Not found (no match after
+      completing the matching process). There is deliberately no code 1.
+  - name: FileNamingConvention
+    kind: structure
+    description: >-
+      Structure embedded in DROP CSV file names — YYYYMMDD (file date), DataBrokerId
+      (4 digits), DataType, and an optional 1-10 character alphanumeric suffix used when
+      splitting responses for one downloaded list.
+    relationships:
+      - type: has_one
+        target: DataType
+        via: DataType
+  - name: UploadResponse
+    kind: json
+    transport: Response body of POST /data/upload and POST /data/amend.
+    description: Receipt listing which files were accepted for validation and which were rejected.
+    relationships:
+      - type: has_many
+        target: AcceptedFileResult
+        via: accepted[]
+      - type: has_many
+        target: RejectedFileResult
+        via: rejected[]
+  - name: AcceptedFileResult
+    kind: json
+    description: One file accepted for validation.
+  - name: RejectedFileResult
+    kind: json
+    description: One file rejected before validation, with fileName and the reason message.
+  - name: MessageResponse
+    kind: json
+    description: >-
+      Generic human-readable envelope, returned on 202 (download preparing), on 200 when
+      there is no new data, and on the 409 conflict paths.
+relationships_summary:
+  primary_flow: >-
+    ListType -> DownloadedCSVRow (has_many) -> UploadCSVRow (has_one, via WorkItemId) ->
+    StatusCode (has_one). Amendments replace an UploadCSVRow's StatusCode for the same
+    WorkItemId.
+  identity_scheme: >-
+    Two identifier schemes coexist: WorkItemId (opaque, DROP-issued, the join key) and
+    HashBase64 (SHA-256/Base64 of a standardized consumer identifier, the match key against
+    the broker's own records).
+id_prefixes: []
+id_prefix_note: No id-prefix convention is published for WorkItemId.
+schema_count: 13
+notes: >-
+  There is no entity for the consumer, the request, or the broker in this contract — the
+  API deliberately exposes only hashed identifiers and work items, which is the privacy
+  property that makes a statewide deletion registry workable.

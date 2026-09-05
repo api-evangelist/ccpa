@@ -1,0 +1,61 @@
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+  (docs) enriching openapi/ccpa-drop-databroker-api.yml (spec)
+docs: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+summary:
+  types:
+    - apiKey
+  api_key_in:
+    - header
+  oauth2: false
+  openid_connect: false
+  mutual_tls: false
+  scopes: false
+schemes:
+  - name: ApiKeyAuth
+    type: apiKey
+    in: header
+    parameter: X-API-KEY
+    description: >-
+      API key issued through the Data Broker Portal. The key grants access only to the
+      consumer deletion lists selected during setup.
+    applied: global
+    sources:
+      - openapi/ccpa-drop-databroker-api.yml
+      - https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+key_lifecycle:
+  issuance: >-
+    Keys are generated in the DROP Data Broker Portal (https://databroker.drop.privacy.ca.gov/)
+    after data broker registration and fee payment are complete. Sign in, go to
+    Home > Consumer Deletion Lists, select the list type(s), Save, then open the API Key tab
+    and choose "Get a new API key".
+  sandbox_issuance: >-
+    A separate sandbox key is issued from SANDBOX ENVIRONMENT > ISSUE SANDBOX API KEY in the
+    same portal.
+  rotation: >-
+    Provider guidance: "Store keys securely using environment variables or secret management
+    systems. Regenerate keys if compromised or if list selection changes." Issuing a new key
+    deactivates all previous keys (notification event "API Key Changed").
+  scoping: >-
+    A key is scoped to the consumer deletion list types selected during setup (NDZ, Email,
+    Phone, MAID, NameVIN, CTVID). Changing list selection requires regenerating the key.
+  authorization_model: >-
+    Per-data-broker credential tied to a registered CalPrivacy data broker account. There is
+    no OAuth, no scopes surface, and no delegated/third-party authorization flow.
+failure_modes:
+  - status: 401
+    body: 'API key is missing or invalid. Fix or regenerate the API key and try again.'
+    observed: >-
+      Live unauthenticated GET https://api.drop.privacy.ca.gov/data/download on 2026-09-05
+      returned 401 with this plain-text body (not application/problem+json).
+  - status: 403
+    meaning: Key is valid but the account is not authorized for the requested list or action.
+notes: >-
+  This is a REGULATOR-operated API. The credential is issued as part of a statutory
+  registration process under the California Delete Act (Civil Code 1798.99.80 et seq.),
+  not through self-service signup, and carries an annual fee.

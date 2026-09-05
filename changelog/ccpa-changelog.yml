@@ -1,0 +1,43 @@
+specification: API Commons ChangeLog
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/#history
+description: >-
+  Documentation version history for the CalPrivacy DROP Data Broker API, published by
+  CalPrivacy as a dated table on the Reference page of the technical specifications. It
+  versions the specification document (and the OpenAPI's info.version), not a wire API
+  version — see lifecycle/ccpa-lifecycle.yml.
+scheme: semver
+current_version: 1.2.0
+current_version_date: '2026-07-02'
+window: complete (the surface has existed since 2026-04-02)
+entries:
+  - version: 1.2.0
+    date: '2026-07-02'
+    breaking: false
+    highlights:
+      - Clarifies handling for ZIP+4 standardization.
+      - Adds information on work item IDs.
+      - Adds webhook configuration settings.
+  - version: 1.1.0
+    date: '2026-06-03'
+    breaking: false
+    highlights:
+      - General release on privacy.ca.gov/drop-for-data-brokers.
+      - Cancellation updates.
+  - version: 1.0.0
+    date: '2026-04-02'
+    breaking: false
+    highlights:
+      - Initial release, accompanying the opening of the DROP Sandbox.
+related_feeds:
+  - name: CalPrivacy news and announcements
+    url: https://cppa.ca.gov/announcements/
+  - name: CalPrivacy newsroom
+    url: https://privacy.ca.gov/about-us/newsroom/
+  - name: privacy.ca.gov RSS
+    url: https://privacy.ca.gov/feed/

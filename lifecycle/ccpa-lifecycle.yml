@@ -1,0 +1,76 @@
+specification: API Commons Lifecycle
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/#history
+  and openapi/ccpa-drop-databroker-api.yml
+description: >-
+  Versioning, deprecation and operational-status posture of the CalPrivacy DROP Data
+  Broker API, plus the statutory milestones that govern the surface this index tracks.
+versioning:
+  scheme: semver-on-the-specification
+  current_version: 1.2.0
+  version_of: The API description and its technical documentation (OpenAPI info.version).
+  url_versioning: false
+  header_versioning: false
+  detail: >-
+    The API itself is unversioned at the URL — the base is https://api.drop.privacy.ca.gov
+    with no version segment and no version header. What carries a version number is the
+    published OpenAPI/technical specification, currently 1.2.0 (July 2, 2026). Consumers
+    therefore have a document version to pin against but no wire-level version to negotiate.
+  history_url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/#history
+deprecation:
+  policy_published: false
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  deprecated_operations: []
+  detail: >-
+    No deprecation policy, no Sunset or Deprecation response headers (RFC 8594), and no
+    operation is marked deprecated in the OpenAPI. The API is 5 months old at time of
+    writing and has not yet retired anything.
+status_page:
+  published: false
+  url: null
+  detail: >-
+    CalPrivacy publishes no status page, uptime history, or incident feed for DROP. The
+    only operational signals available to an integrator are the API's own 500/503 responses
+    and the notification emails/webhooks sent from the Data Broker Portal.
+sla:
+  published: false
+  detail: >-
+    No availability or support SLA is published. Obligations run the other way on this
+    surface: the statute and regulations impose processing deadlines on the DATA BROKER,
+    not availability commitments on the regulator.
+  broker_obligations:
+    - >-
+      Data brokers are required to begin processing DROP deletion requests on
+      August 1, 2026 (source: https://cppa.ca.gov/data_broker_registry/).
+    - >-
+      Registration with CalPrivacy is annual, January 1-31
+      (source: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/).
+    - >-
+      Processing timelines are set by Civil Code 1798.99.80 et seq. and CCR title 11
+      section 7600, which the technical specifications reference without restating.
+milestones:
+  - date: '2026-01-01'
+    event: >-
+      DROP goes live for consumers — California residents may submit one deletion request
+      that reaches all registered data brokers.
+    source: https://cppa.ca.gov/data_broker_registry/
+  - date: '2026-04-02'
+    event: DROP Sandbox opens; technical documentation 1.0.0 published.
+  - date: '2026-06-03'
+    event: Documentation 1.1.0 — general release on privacy.ca.gov/drop-for-data-brokers.
+  - date: '2026-07-02'
+    event: Documentation 1.2.0 — current.
+  - date: '2026-08-01'
+    event: Data brokers required to begin processing DROP deletion requests.
+support:
+  channel: DROP Data Broker Portal contact form
+  url: https://databroker.drop.privacy.ca.gov/Contact
+  help: https://privacy.ca.gov/drop-for-data-brokers/help/

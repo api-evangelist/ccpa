@@ -1,0 +1,185 @@
+specification: API Commons Conventions
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/ (integration-workflow,
+  api-operations, working-with-data, getting-started, reference) enriching
+  openapi/ccpa-drop-databroker-api.yml
+description: >-
+  Cross-cutting runtime semantics for the CalPrivacy DROP Data Broker API — the statutory
+  file-exchange API that registered data brokers must use to retrieve consumer deletion
+  requests under the California Delete Act and report the action they took. This is a
+  batch download/upload contract, not a resource CRUD API, so several conventions that
+  apply to a typical REST surface are genuinely not applicable here.
+auth:
+  style: api-key-header
+  header: X-API-KEY
+  detail: See authentication/ccpa-authentication.yml.
+idempotency:
+  supported: false
+  coverage: none
+  mechanism: null
+  scope: []
+  detail: >-
+    No idempotency key, no request-deduplication header, and no documented replay
+    protection on either mutating operation (POST /data/upload, POST /data/amend). The
+    docs describe no duplicate-submission handling. A retried upload is a new upload.
+  evidence:
+    - openapi/ccpa-drop-databroker-api.yml
+    - https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/integration-workflow/
+  mitigation: >-
+    The API instead uses state gating: POST /data/upload returns 409 when "No active
+    download is waiting for responses", and GET /data/download returns 409 when a
+    "Previous download is not complete". That constrains double-firing but is not
+    idempotency — a second upload against an active download is accepted, not deduplicated.
+reversibility:
+  grade: documented
+  detail: >-
+    A first-class reversal operation exists and is documented, but no window is stated
+    anywhere in the technical specifications, so this grades `documented` rather than
+    `verified`.
+  write_surfaces:
+    - operation: uploadData
+      method: POST
+      path: /data/upload
+      effect: >-
+        Submits status responses (2 Exempted / 3 Deleted / 4 Opted out / 5 Not found) for
+        each work item in a downloaded consumer deletion list.
+      reversal:
+        operation: uploadAmend
+        method: POST
+        path: /data/amend
+        summary: Correct or update previously submitted status responses.
+        window: null
+        window_note: >-
+          NOT STATED. The technical specifications describe amendment as available but do
+          not publish a deadline, cut-off, or retention period for amending a prior
+          upload. The integration-workflow page points at Civil Code 1798.99.80 et seq.
+          and CCR title 11 section 7600 for "relevant timelines" without restating any.
+          Do not assume a window.
+        docs: >-
+          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+      irreversible_side_effect: >-
+        The underlying real-world action a status code reports — deletion of a consumer's
+        personal information — is NOT reversible by this API. POST /data/amend corrects the
+        REPORT, not the deletion. An agent must treat status code 3 (Deleted) as a
+        one-way action taken outside this contract.
+    - operation: uploadAmend
+      method: POST
+      path: /data/amend
+      effect: Corrects or updates previously submitted status responses.
+      reversal:
+        operation: uploadAmend
+        window: null
+        note: An amendment is itself amendable; no window published.
+  read_only_operations:
+    - downloadData
+pagination:
+  style: none
+  detail: >-
+    Not applicable. GET /data/download returns a single ZIP archive containing one CSV per
+    selected list type. There are no page/cursor/limit parameters and no collection
+    endpoints. Volume is partitioned by list type and by file date, not by page.
+  multi_file_uploads: >-
+    Response files may be split across multiple files for the same downloaded list using
+    the OptionalSuffix element of the file naming convention (e.g. 20260312_4821_Email_part01.csv).
+async_polling:
+  detail: >-
+    GET /data/download is a prepare-then-poll operation. When the archive is not yet built
+    the API returns 202 with a JSON MessageResponse and a Retry-After response header; the
+    caller repeats GET /data/download until it returns 200 with application/zip.
+  ready_signal: 200 with Content-Type application/zip and a Content-Disposition header
+  not_ready_signal: 202 with Retry-After
+  conflict_signal: 409 "Previous download is not complete."
+field_expansion:
+  supported: false
+  detail: Not applicable — the payload is CSV inside a ZIP, not a JSON object graph.
+metadata:
+  supported: false
+  detail: >-
+    No free-form metadata field. The only caller-controlled identifier surface is the
+    OptionalSuffix in the uploaded file name.
+request_id_tracing:
+  supported: false
+  detail: >-
+    No request-id or correlation header is documented on API responses. Work items carry a
+    WorkItemId inside the CSV payload, which is the unit of correlation between a
+    downloaded row and an uploaded status row.
+  work_item_id: >-
+    The Id column of the downloaded CSV must be echoed in the Id column of the uploaded
+    CSV (header must be exactly `Id,Status`).
+versioning:
+  api_version: null
+  api_version_detail: >-
+    The API is unversioned in the URL — the base is https://api.drop.privacy.ca.gov with no
+    /v1 segment, and there is no version header. What IS versioned is the documentation and
+    the OpenAPI description, currently 1.2.0 (info.version). See changelog/ccpa-changelog.yml.
+  environments:
+    production: https://api.drop.privacy.ca.gov
+    sandbox: https://api.drop.privacy.ca.gov/sandbox
+  detail: >-
+    The sandbox is a path prefix on the same host, not a separate domain, so switching
+    environments means changing the base path and the key.
+error_envelope:
+  format: mixed
+  rfc9457: false
+  detail: >-
+    Not RFC 9457. Successful-but-informational and rejection responses use two hand-rolled
+    JSON shapes: MessageResponse {message} and UploadResponse {message, acceptedCount,
+    rejectedCount, accepted[], rejected[]} where each rejected entry is {fileName, message}.
+    Authentication failures (401) return a plain-text string, not JSON. See
+    errors/ccpa-problem-types.yml.
+rate_limit_signaling:
+  headers_published: []
+  detail: >-
+    No X-RateLimit-* or RateLimit-* headers are documented, and no numeric quota is
+    published. Exhaustion is signalled by HTTP 429 with the published guidance "Wait 30
+    seconds and retry". Retry-After IS used, but on 202 (download preparing) rather than
+    on 429. See rate-limits/ccpa-rate-limits.yml.
+content_types:
+  request:
+    - multipart/form-data
+  response:
+    - application/zip
+    - application/json
+    - text/plain
+  upload_field_name: files
+  file_constraint: Uploaded files must be CSV; CSV header must be exactly `Id,Status`.
+data_conventions:
+  hashing:
+    algorithm: SHA-256
+    input_encoding: UTF-8
+    output_encoding: Base64
+    detail: >-
+      DROP distributes hashed consumer identifiers only. Brokers must apply the published
+      per-identifier standardization rules before hashing so their hashes match DROP's.
+    composite: >-
+      NDZ hashes FirstName + LastName + DOB + ZIP; NameVIN hashes FirstName + LastName +
+      VIN. Each field is standardized and hashed first, the Base64 hashes are concatenated
+      in the required order, then hashed again.
+    docs: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+  file_naming: >-
+    YYYYMMDD_DataBrokerId_DataType[_OptionalSuffix].csv — file date, 4-digit data broker id,
+    one of NDZ/Email/Phone/MAID/NameVIN/CTVID/Removed, optional 1-10 alphanumeric suffix.
+  status_codes:
+    2: Exempted — match found and all personal information is exempt
+    3: Deleted — match found and non-exempt personal information was deleted
+    4: Opted out — multiple consumers linked to the same identifier and all were opted out
+    5: Not found — no match found after completing the matching process
+dry_run_mode:
+  supported: true
+  detail: >-
+    The sandbox environment (https://api.drop.privacy.ca.gov/sandbox, with a separate
+    sandbox API key) is the rehearsal surface. There is no per-request dry-run flag.
+  see: sandbox/ccpa-sandbox.yml
+cross_links:
+  errors: errors/ccpa-problem-types.yml
+  lifecycle: lifecycle/ccpa-lifecycle.yml
+  authentication: authentication/ccpa-authentication.yml
+  rate_limits: rate-limits/ccpa-rate-limits.yml
+  sandbox: sandbox/ccpa-sandbox.yml
+  webhooks: asyncapi/ccpa-drop-webhooks.yml

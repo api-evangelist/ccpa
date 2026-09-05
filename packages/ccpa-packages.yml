@@ -1,0 +1,77 @@
+specification: API Commons Packages
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+generated: '2026-09-05'
+method: searched
+source: >-
+  registry.npmjs.org metadata endpoints and api.github.com, reached from the specification
+  repositories this index tracks. Registries searched: npm, PyPI, RubyGems, crates.io,
+  Packagist, NuGet, Maven Central, pkg.go.dev.
+description: >-
+  First-party client libraries for the machine-readable surfaces this CCPA/CPRA index
+  tracks. Each entry names the ORGANIZATION that publishes it, because this record indexes
+  several independent publishers — official for one surface is not official for the record
+  as a whole.
+packages:
+  - name: '@iabgpp/cmpapi'
+    registry: npm
+    url: https://www.npmjs.com/package/@iabgpp/cmpapi
+    official: true
+    publisher: IAB Tech Lab
+    applies_to: ccpa:iab-gpp
+    language: TypeScript/JavaScript
+    version: 3.2.0
+    published: '2026-08-03'
+    license: Apache-2.0
+    releases: 18
+    repository: https://github.com/IABTechLab/iabgpp-es
+    description: >-
+      Encode/decode consent information with the IAB GPP Framework — the reference
+      implementation of the Global Privacy Platform string, including the US-state
+      sections that carry CCPA/CPRA opt-out and sensitive-data signals.
+    source: https://registry.npmjs.org/@iabgpp/cmpapi
+  - name: '@iabgpp/stub'
+    registry: npm
+    url: https://www.npmjs.com/package/@iabgpp/stub
+    official: true
+    publisher: IAB Tech Lab
+    applies_to: ccpa:iab-gpp
+    language: JavaScript
+    version: 3.2.0
+    published: '2026-08-03'
+    license: Apache-2.0
+    releases: 18
+    repository: https://github.com/IABTechLab/iabgpp-es
+    description: >-
+      CMP API stub code, included via a CommonJS loader or dropped directly on the page.
+      Released in lockstep with @iabgpp/cmpapi.
+    source: https://registry.npmjs.org/@iabgpp/stub
+absent:
+  - surface: ccpa:drop-data-broker-api
+    publisher: California Privacy Protection Agency (CalPrivacy)
+    version: null
+    note: >-
+      CalPrivacy publishes NO client library in any registry for the DROP Data Broker API
+      — no npm, PyPI, RubyGems, crates.io, Packagist, NuGet, Maven Central or Go module.
+      What it publishes instead is the OpenAPI 3.1.0 description at
+      https://dropresources.blob.core.windows.net/apidocs/databroker_api.yaml, from which
+      a client can be generated. Checked 2026-09-05.
+  - surface: ccpa:global-privacy-control
+    publisher: W3C Privacy Community Group
+    version: null
+    note: >-
+      GPC is a browser-emitted header (Sec-GPC) and a /.well-known/gpc.json resource, not
+      a client library. No first-party package exists on npm or any other registry;
+      searching npm for `global-privacy-control` returns no first-party publication.
+      Checked 2026-09-05.
+  - surface: ccpa:ca-data-broker-registry
+    publisher: California Privacy Protection Agency (CalPrivacy)
+    version: null
+    note: >-
+      No SDK. The registry is distributed as downloadable CSV files
+      (/data_broker_registry/complete-reg-data-brokers.csv, registry2024.csv,
+      registry2025.csv, HTTP 200 on 2026-09-05), which need no client library.
+notes: >-
+  Third-party wrappers exist for some of these surfaces but none is recorded here — only
+  publications by the organization that owns the surface are listed.

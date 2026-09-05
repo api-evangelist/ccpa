@@ -1,0 +1,137 @@
+specification: API Commons Error Catalog
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+generated: '2026-09-05'
+method: searched
+source: >-
+  Derived from the 4xx/5xx responses in openapi/ccpa-drop-databroker-api.yml, enriched from
+  the published response-code table at
+  https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+  and a live unauthenticated probe of https://api.drop.privacy.ca.gov/data/download.
+format: custom
+rfc9457: false
+envelope:
+  informational:
+    schema: MessageResponse
+    content_type: application/json
+    shape: '{ "message": "Human-readable response message." }'
+  upload_result:
+    schema: UploadResponse
+    content_type: application/json
+    shape: >-
+      { "message": string, "acceptedCount": int, "rejectedCount": int,
+      "accepted": [ { "fileName": string, ... } ],
+      "rejected": [ { "fileName": string, "message": "Reason the file was rejected." } ] }
+    note: >-
+      Per-file rejections are carried inside a 202/400 body rather than as separate HTTP
+      errors — a partially-accepted upload is a 202 whose rejected[] array is non-empty.
+      A caller that only checks the status code will silently miss rejected files.
+  authentication:
+    content_type: text/plain
+    shape: A bare string, not JSON.
+problem_types:
+  - status: 400
+    title: Bad Request
+    operations: [uploadData, uploadAmend]
+    meaning: Request is malformed or no files were accepted.
+    schema: UploadResponse
+    retryable: false
+    remediation: >-
+      Send multipart/form-data with the field name `files`, attach only CSV files, and make
+      the CSV header exactly `Id,Status` with Status values restricted to 2, 3, 4 or 5.
+      Read rejected[] for the per-file reason.
+  - status: 401
+    title: Unauthorized
+    operations: [downloadData, uploadData, uploadAmend]
+    meaning: API key is missing or invalid.
+    body_observed: 'API key is missing or invalid. Fix or regenerate the API key and try again.'
+    evidence: >-
+      Live probe 2026-09-05, GET https://api.drop.privacy.ca.gov/data/download with no
+      X-API-KEY returned HTTP 401 and this plain-text body.
+    retryable: false
+    remediation: Send the X-API-KEY header; regenerate the key in the Data Broker Portal if it was rotated.
+  - status: 403
+    title: Forbidden
+    operations: [downloadData, uploadData, uploadAmend]
+    meaning: >-
+      Key is valid but the account is not authorized for the requested list or action —
+      typically registration or fee payment is incomplete, or the list type was not selected.
+    retryable: false
+    remediation: Confirm registration status and consumer deletion list selection in the Data Broker Portal.
+  - status: 404
+    title: Not Found
+    operations: [downloadData, uploadData, uploadAmend]
+    meaning: Requested resource does not exist.
+    retryable: false
+  - status: 409
+    title: Conflict — download not complete
+    operations: [downloadData]
+    meaning: Previous download is not complete.
+    schema: MessageResponse
+    retryable: false
+    remediation: >-
+      Finish the current download/process/upload cycle before requesting a new archive.
+      This is the state gate that stands in for idempotency on this contract.
+  - status: 409
+    title: Conflict — no active download
+    operations: [uploadData]
+    meaning: No active download is waiting for responses.
+    schema: MessageResponse
+    retryable: false
+    remediation: Call GET /data/download and process the archive before uploading status responses.
+  - status: 409
+    title: Conflict — amend not permitted in current state
+    operations: [uploadAmend]
+    meaning: The amend request cannot be processed in the current state.
+    schema: MessageResponse
+    retryable: false
+  - status: 429
+    title: Too Many Requests
+    operations: [downloadData, uploadData, uploadAmend]
+    meaning: Request was throttled.
+    retryable: true
+    retry_guidance: 'Published guidance: "Wait 30 seconds and retry."'
+    headers: []
+    note: No Retry-After or X-RateLimit-* header is documented on 429.
+  - status: 500
+    title: Server Error
+    operations: [downloadData, uploadData, uploadAmend]
+    retryable: true
+    retry_guidance: Retry later.
+  - status: 503
+    title: Server Error
+    operations: [downloadData, uploadData, uploadAmend]
+    retryable: true
+    retry_guidance: >-
+      Listed in the published response-code table on the api-operations page but not
+      declared in the OpenAPI responses — a spec/docs divergence worth knowing about.
+    in_spec: false
+non_error_signals:
+  - status: 202
+    operations: [downloadData]
+    meaning: Download package is being prepared.
+    headers: [Retry-After]
+    action: Poll GET /data/download again after Retry-After.
+  - status: 202
+    operations: [uploadData, uploadAmend]
+    meaning: At least one file was accepted and queued for validation.
+    note: Inspect rejected[] — a 202 does not mean every file was accepted.
+  - status: 200
+    operations: [downloadData]
+    meaning: ZIP is ready and returned, OR no new consumer request data is available.
+    note: >-
+      A 200 is ambiguous by design — content type disambiguates it. application/zip means
+      data; application/json (MessageResponse) means there was nothing new.
+retry_policy:
+  retryable_statuses: [429, 500, 503]
+  non_retryable_statuses: [400, 401, 403, 404, 409]
+  source: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+gaps:
+  - >-
+    No machine-readable error type/code registry — errors are distinguished only by HTTP
+    status plus a free-text `message`, and three different conditions share status 409.
+  - >-
+    401 returns text/plain while everything else returns application/json, so a client
+    cannot parse all failures with one code path.

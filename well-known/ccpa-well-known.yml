@@ -1,0 +1,142 @@
+specification: API Commons Well-Known
+specificationVersion: '0.1'
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+generated: '2026-09-05'
+method: probed
+source: Direct HTTP probe of the named /.well-known/ path list on every host this index record names (registrable
+  domain + www, each API humanURL host, the DROP API servers[] host, and the docs host).
+description: Well-known discovery documents served by the hosts behind the CCPA/CPRA technical surface.
+  The one real hit is the Global Privacy Control support resource at /.well-known/gpc.json on globalprivacycontrol.org
+  — the discovery document the GPC specification itself defines, and the only machine-readable /.well-known/
+  artifact in this regulatory surface. Every other named path 404s across every host probed.
+hosts:
+- host: globalprivacycontrol.org
+  documents:
+  - path: /.well-known/gpc.json
+    status: 200
+    file: well-known/ccpa-gpc.json
+    note: 'Real JSON document (48 bytes) declaring {"gpc": true, "lastUpdate": "2021-05-13"}. This is
+      the GPC support resource defined by the Global Privacy Control specification, served by the specification''s
+      own site.'
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: www.globalprivacycontrol.org
+  documents:
+  - path: /.well-known/gpc.json
+    status: 200
+    file: well-known/ccpa-gpc.json
+    note: Identical body to the apex host.
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: api.drop.privacy.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  note: servers[] host of the DROP Data Broker API. Serves no well-known documents; an unauthenticated
+    GET /data/download returns 401 with a plain-text message.
+- host: privacy.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /llms.txt
+    status: 404
+  note: CalPrivacy (CPPA) docs host. Returns the WordPress 404 template, not a document.
+- host: cppa.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 300
+  - path: /.well-known/openid-configuration
+    status: 300
+  - path: /.well-known/oauth-authorization-server
+    status: 300
+  - path: /.well-known/api-catalog
+    status: 300
+  - path: /.well-known/ai-plugin.json
+    status: 300
+  - path: /.well-known/agent-card.json
+    status: 300
+  - path: /.well-known/agent.json
+    status: 300
+  note: Apache mod_negotiation answers every /.well-known/* path with HTTP 300 Multiple Choices and an
+    HTML body. Not a document — treated as a miss.
+- host: oag.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: iabtechlab.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  note: Cloudflare bot challenge on some paths; every response was an HTML shell.
+- host: privacycg.github.io
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  note: GitHub Pages host for the GPC specification draft.
+- host: databroker.drop.privacy.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /robots.txt
+    status: 404
+  note: DROP Data Broker Portal (Blazor SPA); returns bare 404s, no documents.
+- host: ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: well-known/ccpa-security.txt
+    note: RFC 9116 security.txt served by the State of California at the registrable-domain apex, covering
+      every ca.gov state site including privacy.ca.gov and api.drop.privacy.ca.gov (the DROP API host).
+      Canonical https://www.ca.gov/.well-known/security.txt; Policy https://cdt.ca.gov/policy/simm/#5300;
+      Contact mailto:cagov-website-info@state.ca.gov; Expires 2026-12-31.
+- host: www.ca.gov
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    file: well-known/ccpa-security.txt
+    note: Canonical location named by the security.txt itself.
+summary:
+  hosts_probed: 11
+  documents_found: 2
+  security_txt: true
+  api_catalog: false
+  agent_card: false
