@@ -1,0 +1,14 @@
+{
+  "repo": "ccpa",
+  "feeds": [
+    {
+      "source": "https://privacy.ca.gov/drop-for-data-brokers/help/",
+      "feed_url": "https://privacy.ca.gov/feed/",
+      "title": "",
+      "saved": 3,
+      "method": "discovered"
+    }
+  ],
+  "post_count": 3,
+  "fetched": "2026-09-06T19:17:18Z"
+}

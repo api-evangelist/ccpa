@@ -1,27 +1,30 @@
-# Kin Score artifact — ccpa — 2026-08-10T093022
+# Kin Score artifact — ccpa — 2026-09-05T144739
 # The API Evangelist rating (https://github.com/api-evangelist/kin-score). Generated; do not edit.
 ---
 kin_score:
   slug: ccpa
-  schema_version: 0.9.1
-  scored_at: '2026-08-10'
-  run_ts: 2026-08-10T093022
-  composite: 20.2
+  schema_version: 0.18.3
+  scored_at: '2026-09-05'
+  run_ts: 2026-09-05T144739
+  composite: 18.1
   band: emerging
   facets:
     discoverability: 64.8
     contract_quality: 0.0
-    governance: 0.0
-    operational_transparency: 31.6
-    developer_ergonomics: 8.7
-    commercial_clarity: 39.5
+    governance: 18.2
+    operational_transparency: 13.2
+    developer_ergonomics: 9.5
+    commercial_clarity: 28.9
+    contract_governance: 18.2
+    access_clarity: 28.9
   agent_readiness:
-    score: 3.2
-    band: human-only
+    score: 6.0
+    band: agent-aware
     dimensions:
       spec_presence: false
       agentic_access: false
-      mcp_server: false
+      reversibility_documented: false
+      mcp_server: documented
       auth_clarity: false
       idempotency: false
       error_semantics: false
@@ -33,3 +36,7 @@ kin_score:
       consent_identity: false
       agent_card: false
       dry_run_mode: false
+      delegated_identity: false
+      protected_resource_metadata: false
+      dynamic_client_registration: false
+      agentic_commerce: false
