@@ -2,6 +2,12 @@ aid: ccpa
 url: >-
   https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
 name: CCPA (California Consumer Privacy Act)
+# x-type: concept -- this record is a LAW, not a company (roadmap#362). score.rb's
+# NON_PROVIDER_X_TYPES excludes concept from scoring: a statute cannot publish an API and
+# must not be ranked as though it did. CCPA scored 59.1 `strong`, #23 of 746 in compliance,
+# above OneTrust and Didomi. These entities are modelled properly at
+# regulations.apievangelist.com; this record keeps the slug resolving.
+x-type: concept
 tags:
   - CPRA
   - California
