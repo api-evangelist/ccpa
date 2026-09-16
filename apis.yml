@@ -1,31 +1,25 @@
 aid: ccpa
-url: >-
-  https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
+url: https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
 name: CCPA (California Consumer Privacy Act)
-# x-type: concept -- this record is a LAW, not a company (roadmap#362). score.rb's
-# NON_PROVIDER_X_TYPES excludes concept from scoring: a statute cannot publish an API and
-# must not be ranked as though it did. CCPA scored 59.1 `strong`, #23 of 746 in compliance,
-# above OneTrust and Didomi. These entities are modelled properly at
-# regulations.apievangelist.com; this record keeps the slug resolving.
 x-type: concept
 tags:
-  - CPRA
-  - California
-  - Compliance
-  - Data Protection
-  - Data Subject Rights
-  - Legal
-  - Privacy
-  - Regulations
+- CPRA
+- California
+- Compliance
+- Data Protection
+- Data Subject Rights
+- Legal
+- Privacy
+- Regulations
 tags_raw:
-  - CPRA
-  - California
-  - Compliance
-  - Data Protection
-  - Data Subject Rights
-  - Legal
-  - Privacy
-  - Regulation
+- CPRA
+- California
+- Compliance
+- Data Protection
+- Data Subject Rights
+- Legal
+- Privacy
+- Regulation
 type: Index
 deliveryModel:
   model: unknown
@@ -35,7 +29,7 @@ deliveryModel:
   label: Delivery model not determined — needs a product licence on record
   confidence: low
   source:
-    - repository-unlicensed
+  - repository-unlicensed
   generated: '2026-08-28'
   method: derived
 accessModel:
@@ -47,295 +41,284 @@ accessModel:
   label: Freemium
   confidence: medium
   source:
-    - plans
+  - plans
   generated: '2026-07-22'
   method: derived
 image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/ccpa.png
 access: 3rd-Party
 created: '2025-01-01'
-modified: '2026-09-05'
+modified: '2026-09-16'
 position: Consuming
-description: >-
-  The California Consumer Privacy Act (CCPA), amended by the California
-  Privacy Rights Act (CPRA), is a state statute that grants California
-  residents rights over their personal information: the right to know,
-  delete, correct, opt-out of sale/sharing, limit use of sensitive personal
-  information, and non-discrimination for exercising privacy rights. It is
-  enforced by the California Privacy Protection Agency (CPPA) and the
-  California Attorney General. Technical interoperability mechanisms
-  include the Global Privacy Control (GPC) browser signal and the IAB Tech
-  Lab US Privacy (USP) / Global Privacy Platform (GPP) signals for
-  advertising technology. This index tracks the official regulatory
-  resources, technical privacy signals, and commercial APIs that help
-  businesses comply with CCPA/CPRA obligations.
+description: 'The California Consumer Privacy Act (CCPA), amended by the California Privacy Rights Act
+  (CPRA), is a state statute that grants California residents rights over their personal information:
+  the right to know, delete, correct, opt-out of sale/sharing, limit use of sensitive personal information,
+  and non-discrimination for exercising privacy rights. It is enforced by the California Privacy Protection
+  Agency (CPPA) and the California Attorney General. Technical interoperability mechanisms include the
+  Global Privacy Control (GPC) browser signal and the IAB Tech Lab US Privacy (USP) / Global Privacy Platform
+  (GPP) signals for advertising technology. This index tracks the official regulatory resources, technical
+  privacy signals, and commercial APIs that help businesses comply with CCPA/CPRA obligations.'
 apis:
-  - aid: ccpa:global-privacy-control
-    name: Global Privacy Control (GPC) Specification
-    tags:
-      - Browser Signal
-      - Opt-Out
-      - Standard
-    humanURL: https://globalprivacycontrol.org/
-    properties:
-      - url: https://globalprivacycontrol.org/
-        type: Website
-      - url: https://privacycg.github.io/gpc-spec/
-        type: Specification
-      - url: https://github.com/privacycg/gpc-spec
-        type: SourceCode
-    description: >-
-      Global Privacy Control is a browser-level signal that communicates a
-      user's opt-out preference to websites. The California Attorney
-      General has affirmed that GPC must be treated as a valid CCPA
-      "Do Not Sell or Share" opt-out request.
-  - aid: ccpa:iab-gpp
-    name: IAB Tech Lab Global Privacy Platform (GPP)
-    tags:
-      - AdTech
-      - Consent
-      - IAB
-      - Signals
-    humanURL: https://iabtechlab.com/gpp/
-    properties:
-      - url: https://iabtechlab.com/gpp/
-        type: Documentation
-      - url: https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform
-        type: SourceCode
-      - url: https://github.com/InteractiveAdvertisingBureau/USPrivacy
-        type: LegacySpec
-      - url: packages/ccpa-packages.yml
-        type: Packages
-      - url: packages/ccpa-packages.yml
-        type: SDKs
-    description: >-
-      The IAB Tech Lab Global Privacy Platform (GPP) is the successor to
-      the US Privacy (USP) string. It provides a standardized way to
-      communicate user consent and opt-out signals between publishers,
-      consent management platforms, and adtech vendors for CCPA, CPRA, and
-      other jurisdictions.
-  - aid: ccpa:cppa-enforcement-resources
-    name: California Privacy Protection Agency (CPPA) Resources
-    tags:
-      - Enforcement
-      - Regulations
-      - Rulemaking
-    tags_raw:
-      - Enforcement
-      - Regulation
-      - Rulemaking
-    humanURL: https://cppa.ca.gov/
-    properties:
-      - url: https://cppa.ca.gov/
-        type: Website
-      - url: https://cppa.ca.gov/regulations/
-        type: Regulations
-    description: >-
-      Official resources from the California Privacy Protection Agency, the
-      body empowered by CPRA to implement, enforce, and publish regulations
-      under the CCPA.
-  - aid: ccpa:ca-data-broker-registry
-    name: California Data Broker Registry
-    tags:
-      - Data Brokers
-      - Registry
-    humanURL: https://oag.ca.gov/data-brokers
-    properties:
-      - url: https://oag.ca.gov/data-brokers
-        type: Registry
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
-        type: Registration
-    description: >-
-      Official California Attorney General registry of data brokers
-      required to register under Civil Code section 1798.99.80, providing
-      a public list that consumers can use to submit opt-out requests.
-  - aid: ccpa:drop-data-broker-api
-    name: CalPrivacy DROP Data Broker API
-    tags:
-      - Data Brokers
-      - Delete Act
-      - Deletion Requests
-      - DROP
-      - Regulator API
-    humanURL: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
-    baseURL: https://api.drop.privacy.ca.gov
-    properties:
-      - url: openapi/ccpa-drop-databroker-api.yml
-        type: OpenAPI
-      - url: https://dropresources.blob.core.windows.net/apidocs/databroker_api.yaml
-        type: Specification
-      - url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
-        type: Documentation
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
-        type: APIReference
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
-        type: GettingStarted
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/integration-workflow/
-        type: Documentation
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
-        type: Documentation
-      - url: 
-          https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/
-        type: Reference
-      - url: https://databroker.drop.privacy.ca.gov/
-        type: Portal
-    description: >-
-      The Delete Request and Opt-out Platform (DROP) Data Broker API is the statutory integration
-      surface California's Delete Act requires of every registered data broker. Brokers call
-      GET /data/download to retrieve a ZIP of CSV files holding SHA-256 hashed consumer deletion
-      identifiers, match those hashes against their own records, act, then report a status
-      per work item with POST /data/upload (2 Exempted, 3 Deleted, 4 Opted out, 5 Not found),
-      correcting a prior filing with POST /data/amend. Operated by the California Privacy
-      Protection Agency (CalPrivacy), authenticated with an X-API-KEY issued in the Data Broker
-      Portal after annual registration and fee payment. OpenAPI 3.1.0, description version
-      1.2.0. Processing became mandatory for registered brokers on 2026-08-01.
-common:
-  - type: VulnerabilityDisclosure
-    url: security/ccpa-vulnerability-disclosure.yml
-  - type: DomainSecurity
-    url: security/ccpa-domain-security.yml
-  - type: Website
-    url: https://oag.ca.gov/privacy/ccpa
-  - type: Documentation
-    url: https://oag.ca.gov/privacy/ccpa
-  - type: Regulator
-    url: https://cppa.ca.gov/
-  - type: StatuteText
-    url: 
-      https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=CIV&division=3.&title=1.81.5.&part=4.&chapter=&article=
-  - type: Regulations
-    url: https://cppa.ca.gov/regulations/
-  - type: FAQ
-    url: https://oag.ca.gov/privacy/ccpa
-  - type: DataBrokerRegistry
-    url: https://oag.ca.gov/data-brokers
-  - type: GPC
-    url: https://globalprivacycontrol.org/
-  - type: GPP
-    url: https://iabtechlab.com/gpp/
-  - name: Rights
-    type: Rights
-    data:
-      - name: Right to Know
-      - name: Right to Delete
-      - name: Right to Correct
-      - name: Right to Opt-Out of Sale
-      - name: Right to Opt-Out of Sharing (Cross-Context Behavioral Advertising)
-      - name: Right to Limit Use of Sensitive Personal Information
-      - name: Right to Data Portability
-      - name: Right to Non-Discrimination
-  - name: Applicability
-    type: Applicability
-    data:
-      - name: Gross Annual Revenue > $25M
-      - name: Personal Information of 100k+ California Residents
-      - name: 50%+ Revenue From Sale of Personal Information
-  - name: Features
-    type: Features
-    data:
-      - name: Notice at Collection
-      - name: Privacy Policy Disclosure
-      - name: Do Not Sell or Share Link
-      - name: Limit Use of Sensitive PI Link
-      - name: Verifiable Consumer Requests
-      - name: Authorized Agent Requests
-      - name: Opt-Out Preference Signal (GPC)
-      - name: Service Provider / Contractor Contracts
-      - name: Data Processing Addendum
-      - name: Data Retention Disclosure
-      - name: Risk Assessments (CPRA)
-      - name: Cybersecurity Audits (CPRA)
-      - name: Automated Decision-Making Disclosures (CPRA)
-  - name: UseCases
-    type: UseCases
-    data:
-      - name: DSAR (Data Subject Access Request) Automation
-      - name: Consent Management Platform (CMP)
-      - name: Cookie Banner and Preference Center
-      - name: Data Inventory and Mapping
-      - name: Vendor Risk Management
-      - name: Privacy Impact Assessments
-      - name: Audit and Reporting
-      - name: Global Privacy Control Handling
-      - name: Data Broker Registration
-  - type: Authentication
-    url: authentication/ccpa-authentication.yml
+- aid: ccpa:global-privacy-control
+  name: Global Privacy Control (GPC) Specification
+  tags:
+  - Browser Signal
+  - Opt-Out
+  - Standard
+  humanURL: https://globalprivacycontrol.org/
+  properties:
+  - url: https://globalprivacycontrol.org/
+    type: Website
+  - url: https://privacycg.github.io/gpc-spec/
+    type: Specification
+  - url: https://github.com/privacycg/gpc-spec
+    type: SourceCode
+  description: Global Privacy Control is a browser-level signal that communicates a user's opt-out preference
+    to websites. The California Attorney General has affirmed that GPC must be treated as a valid CCPA
+    "Do Not Sell or Share" opt-out request.
+- aid: ccpa:iab-gpp
+  name: IAB Tech Lab Global Privacy Platform (GPP)
+  tags:
+  - AdTech
+  - Consent
+  - IAB
+  - Signals
+  humanURL: https://iabtechlab.com/gpp/
+  properties:
+  - url: https://iabtechlab.com/gpp/
+    type: Documentation
+  - url: https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform
+    type: SourceCode
+  - url: https://github.com/InteractiveAdvertisingBureau/USPrivacy
+    type: LegacySpec
+  - url: packages/ccpa-packages.yml
+    type: Packages
+  - url: packages/ccpa-packages.yml
+    type: SDKs
+  description: The IAB Tech Lab Global Privacy Platform (GPP) is the successor to the US Privacy (USP)
+    string. It provides a standardized way to communicate user consent and opt-out signals between publishers,
+    consent management platforms, and adtech vendors for CCPA, CPRA, and other jurisdictions.
+- aid: ccpa:cppa-enforcement-resources
+  name: California Privacy Protection Agency (CPPA) Resources
+  tags:
+  - Enforcement
+  - Regulations
+  - Rulemaking
+  tags_raw:
+  - Enforcement
+  - Regulation
+  - Rulemaking
+  humanURL: https://cppa.ca.gov/
+  properties:
+  - url: https://cppa.ca.gov/
+    type: Website
+  - url: https://cppa.ca.gov/regulations/
+    type: Regulations
+  description: Official resources from the California Privacy Protection Agency, the body empowered by
+    CPRA to implement, enforce, and publish regulations under the CCPA.
+- aid: ccpa:ca-data-broker-registry
+  name: California Data Broker Registry
+  tags:
+  - Data Brokers
+  - Registry
+  humanURL: https://oag.ca.gov/data-brokers
+  properties:
+  - url: https://oag.ca.gov/data-brokers
+    type: Registry
+  - url: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+    type: Registration
+  description: Official California Attorney General registry of data brokers required to register under
+    Civil Code section 1798.99.80, providing a public list that consumers can use to submit opt-out requests.
+- aid: ccpa:ccpa-download-api
+  name: CCPA (California Consumer Privacy Act) Download API
+  description: Request or download consumer deletion lists(s)
+  humanURL: https://globalprivacycontrol.org/
+  baseURL: https://api.drop.privacy.ca.gov
+  tags:
+  - Download
+  properties:
   - type: OpenAPI
-    url: openapi/ccpa-drop-databroker-api.yml
-  - type: Overlay
-    url: overlays/ccpa-drop-databroker-api-overlay.yaml
-  - type: WellKnown
-    url: well-known/ccpa-well-known.yml
-  - type: SecurityTxt
-    url: well-known/ccpa-security.txt
-  - type: Security
-    url: security/ccpa-vulnerability-disclosure.yml
-  - type: Conventions
-    url: conventions/ccpa-conventions.yml
-  - type: Conformance
-    url: conformance/ccpa-conformance.yml
-  - type: ErrorCatalog
-    url: errors/ccpa-problem-types.yml
-  - type: Lifecycle
-    url: lifecycle/ccpa-lifecycle.yml
-  - type: ChangeLog
-    url: changelog/ccpa-changelog.yml
-  - type: Sandbox
-    url: sandbox/ccpa-sandbox.yml
-  - type: Webhooks
-    url: asyncapi/ccpa-drop-webhooks.yml
-  - type: DataModel
-    url: data-model/ccpa-data-model.yml
-  - type: Packages
-    url: packages/ccpa-packages.yml
-  - type: SDKs
-    url: packages/ccpa-packages.yml
-  - type: AgentSkill
-    url: skills/_index.yml
-  - type: LLMsTxt
-    url: llms/ccpa-llms.txt
-  - type: RateLimits
-    url: rate-limits/ccpa-rate-limits.yml
-  - type: Plans
-    url: plans/ccpa-plans-pricing.yml
-  - type: FinOps
-    url: finops/ccpa-finops.yml
-  - type: DeveloperPortal
-    url: https://privacy.ca.gov/drop-for-data-brokers/
+    url: openapi/ccpa-download-api-openapi.yml
+  - type: Specification
+    url: https://dropresources.blob.core.windows.net/apidocs/databroker_api.yaml
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
   - type: APIReference
-    url: 
-      https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
   - type: GettingStarted
-    url: 
-      https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
-  - type: Support
-    url: https://privacy.ca.gov/drop-for-data-brokers/help/
-  - type: Blog
-    url: https://privacy.ca.gov/about-us/blog/
-  - type: Pricing
-    url: 
-      https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
-  - type: SignUp
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/integration-workflow/
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+  - type: Reference
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/
+  - type: Portal
     url: https://databroker.drop.privacy.ca.gov/
-  - type: TermsOfService
-    url: https://privacy.ca.gov/conditions-of-use/
-  - type: PrivacyPolicy
-    url: https://privacy.ca.gov/privacy-policy/
-  - type: Complaints
-    url: https://privacy.ca.gov/submit-a-complaint/ccpa-complaints/
-  - type: LawsAndRegulations
-    url: https://privacy.ca.gov/laws-and-regulations/
-  - type: Announcements
-    url: https://cppa.ca.gov/announcements/
-  - type: DataBrokerRegistryData
-    url: https://cppa.ca.gov/data_broker_registry/complete-reg-data-brokers.csv
+- aid: ccpa:ccpa-upload-api
+  name: CCPA (California Consumer Privacy Act) Upload API
+  description: Submit new or amended status response files
+  humanURL: https://globalprivacycontrol.org/
+  baseURL: https://api.drop.privacy.ca.gov
+  tags:
+  - Upload
+  properties:
+  - type: OpenAPI
+    url: openapi/ccpa-upload-api-openapi.yml
+  - type: Specification
+    url: https://dropresources.blob.core.windows.net/apidocs/databroker_api.yaml
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/
+  - type: APIReference
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+  - type: GettingStarted
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/integration-workflow/
+  - type: Documentation
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/working-with-data/
+  - type: Reference
+    url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/reference/
+  - type: Portal
+    url: https://databroker.drop.privacy.ca.gov/
+common:
+- type: VulnerabilityDisclosure
+  url: security/ccpa-vulnerability-disclosure.yml
+- type: DomainSecurity
+  url: security/ccpa-domain-security.yml
+- type: Website
+  url: https://oag.ca.gov/privacy/ccpa
+- type: Documentation
+  url: https://oag.ca.gov/privacy/ccpa
+- type: Regulator
+  url: https://cppa.ca.gov/
+- type: StatuteText
+  url: https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=CIV&division=3.&title=1.81.5.&part=4.&chapter=&article=
+- type: Regulations
+  url: https://cppa.ca.gov/regulations/
+- type: FAQ
+  url: https://oag.ca.gov/privacy/ccpa
+- type: DataBrokerRegistry
+  url: https://oag.ca.gov/data-brokers
+- type: GPC
+  url: https://globalprivacycontrol.org/
+- type: GPP
+  url: https://iabtechlab.com/gpp/
+- name: Rights
+  type: Rights
+  data:
+  - name: Right to Know
+  - name: Right to Delete
+  - name: Right to Correct
+  - name: Right to Opt-Out of Sale
+  - name: Right to Opt-Out of Sharing (Cross-Context Behavioral Advertising)
+  - name: Right to Limit Use of Sensitive Personal Information
+  - name: Right to Data Portability
+  - name: Right to Non-Discrimination
+- name: Applicability
+  type: Applicability
+  data:
+  - name: Gross Annual Revenue > $25M
+  - name: Personal Information of 100k+ California Residents
+  - name: 50%+ Revenue From Sale of Personal Information
+- name: Features
+  type: Features
+  data:
+  - name: Notice at Collection
+  - name: Privacy Policy Disclosure
+  - name: Do Not Sell or Share Link
+  - name: Limit Use of Sensitive PI Link
+  - name: Verifiable Consumer Requests
+  - name: Authorized Agent Requests
+  - name: Opt-Out Preference Signal (GPC)
+  - name: Service Provider / Contractor Contracts
+  - name: Data Processing Addendum
+  - name: Data Retention Disclosure
+  - name: Risk Assessments (CPRA)
+  - name: Cybersecurity Audits (CPRA)
+  - name: Automated Decision-Making Disclosures (CPRA)
+- name: UseCases
+  type: UseCases
+  data:
+  - name: DSAR (Data Subject Access Request) Automation
+  - name: Consent Management Platform (CMP)
+  - name: Cookie Banner and Preference Center
+  - name: Data Inventory and Mapping
+  - name: Vendor Risk Management
+  - name: Privacy Impact Assessments
+  - name: Audit and Reporting
+  - name: Global Privacy Control Handling
+  - name: Data Broker Registration
+- type: Authentication
+  url: authentication/ccpa-authentication.yml
+- type: OpenAPI
+  url: openapi/_original/ccpa-drop-databroker-api.yml
+- type: Overlay
+  url: overlays/ccpa-drop-databroker-api-overlay.yaml
+- type: WellKnown
+  url: well-known/ccpa-well-known.yml
+- type: SecurityTxt
+  url: well-known/ccpa-security.txt
+- type: Security
+  url: security/ccpa-vulnerability-disclosure.yml
+- type: Conventions
+  url: conventions/ccpa-conventions.yml
+- type: Conformance
+  url: conformance/ccpa-conformance.yml
+- type: ErrorCatalog
+  url: errors/ccpa-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/ccpa-lifecycle.yml
+- type: ChangeLog
+  url: changelog/ccpa-changelog.yml
+- type: Sandbox
+  url: sandbox/ccpa-sandbox.yml
+- type: Webhooks
+  url: asyncapi/ccpa-drop-webhooks.yml
+- type: DataModel
+  url: data-model/ccpa-data-model.yml
+- type: Packages
+  url: packages/ccpa-packages.yml
+- type: SDKs
+  url: packages/ccpa-packages.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: LLMsTxt
+  url: llms/ccpa-llms.txt
+- type: RateLimits
+  url: rate-limits/ccpa-rate-limits.yml
+- type: Plans
+  url: plans/ccpa-plans-pricing.yml
+- type: FinOps
+  url: finops/ccpa-finops.yml
+- type: DeveloperPortal
+  url: https://privacy.ca.gov/drop-for-data-brokers/
+- type: APIReference
+  url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/api-operations/
+- type: GettingStarted
+  url: https://privacy.ca.gov/drop-for-data-brokers/technical-specifications/getting-started/
+- type: Support
+  url: https://privacy.ca.gov/drop-for-data-brokers/help/
+- type: Blog
+  url: https://privacy.ca.gov/about-us/blog/
+- type: Pricing
+  url: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+- type: SignUp
+  url: https://databroker.drop.privacy.ca.gov/
+- type: TermsOfService
+  url: https://privacy.ca.gov/conditions-of-use/
+- type: PrivacyPolicy
+  url: https://privacy.ca.gov/privacy-policy/
+- type: Complaints
+  url: https://privacy.ca.gov/submit-a-complaint/ccpa-complaints/
+- type: LawsAndRegulations
+  url: https://privacy.ca.gov/laws-and-regulations/
+- type: Announcements
+  url: https://cppa.ca.gov/announcements/
+- type: DataBrokerRegistryData
+  url: https://cppa.ca.gov/data_broker_registry/complete-reg-data-brokers.csv
 maintainers:
-  - FN: Kin Lane
-    email: kin@apievangelist.com
+- FN: Kin Lane
+  email: kin@apievangelist.com
 specificationVersion: '0.23'
 x-enrichment:
   date: '2026-09-05'
