@@ -62,6 +62,10 @@ apis:
   name: Global Privacy Control (GPC) Specification
   tags:
   - Browser Signal
+  - opt Out
+  - Standards
+  tags_raw:
+  - Browser Signal
   - Opt-Out
   - Standard
   humanURL: https://globalprivacycontrol.org/
@@ -134,6 +138,8 @@ apis:
   humanURL: https://globalprivacycontrol.org/
   baseURL: https://api.drop.privacy.ca.gov
   tags:
+  - Downloads
+  tags_raw:
   - Download
   properties:
   - type: OpenAPI
