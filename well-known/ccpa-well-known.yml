@@ -15,7 +15,7 @@ hosts:
   documents:
   - path: /.well-known/gpc.json
     status: 200
-    file: well-known/ccpa-gpc.json
+    file: ccpa-gpc.json
     note: 'Real JSON document (48 bytes) declaring {"gpc": true, "lastUpdate": "2021-05-13"}. This is
       the GPC support resource defined by the Global Privacy Control specification, served by the specification''s
       own site.'
@@ -37,7 +37,7 @@ hosts:
   documents:
   - path: /.well-known/gpc.json
     status: 200
-    file: well-known/ccpa-gpc.json
+    file: ccpa-gpc.json
     note: Identical body to the apex host.
   - path: /.well-known/security.txt
     status: 404
@@ -123,7 +123,7 @@ hosts:
   documents:
   - path: /.well-known/security.txt
     status: 200
-    file: well-known/ccpa-security.txt
+    file: ccpa-security.txt
     note: RFC 9116 security.txt served by the State of California at the registrable-domain apex, covering
       every ca.gov state site including privacy.ca.gov and api.drop.privacy.ca.gov (the DROP API host).
       Canonical https://www.ca.gov/.well-known/security.txt; Policy https://cdt.ca.gov/policy/simm/#5300;
@@ -132,7 +132,7 @@ hosts:
   documents:
   - path: /.well-known/security.txt
     status: 200
-    file: well-known/ccpa-security.txt
+    file: ccpa-security.txt
     note: Canonical location named by the security.txt itself.
 summary:
   hosts_probed: 11

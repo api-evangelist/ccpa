@@ -1,3 +1,5 @@
+# x-archived-from: ccpa-drop-databroker-api.yml
+# x-archived-on: 2026-09-16
 openapi: 3.1.0
 info:
   title: DROP Data Broker API

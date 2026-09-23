@@ -1,0 +1,27 @@
+# Front Door AI Index — ccpa — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: ccpa
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: oag.ca.gov
+  final_host: oag.ca.gov
+  ownership: own
+  owner: ccpa
+  shares_host_with: null
+  inherited_from: null
+  verdict: scored
+  score: 2
+  host_score: 2
+  density: 1.07
+  words: 1867
+  tiers:
+    agentic: 0
+    core: 2
+    model: 0
+  ambiguous: 2
+  top_terms:
+    agent: 2
+    AI: 1
+    foundation model: 1

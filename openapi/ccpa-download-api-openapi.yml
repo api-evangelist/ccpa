@@ -1,0 +1,184 @@
+openapi: 3.2.0
+info:
+  title: DROP Data Broker Download API
+  version: 1.2.0
+  summary: Delete Act - Data Broker Integration API
+  description: 'The DROP (Delete Request and Opt-out Platform) Data Broker API enables
+
+    data brokers to integrate with DROP to programmatically retrieve consumer
+
+    deletion request data and report status updates.'
+servers:
+- url: https://api.drop.privacy.ca.gov
+  description: Production
+- url: https://api.drop.privacy.ca.gov/sandbox
+  description: Sandbox
+security:
+- ApiKeyAuth: []
+tags:
+- name: Download
+  description: Request or download consumer deletion lists(s)
+paths:
+  /data/download:
+    get:
+      operationId: downloadData
+      summary: Request or download consumer deletion request data
+      description: 'Requests the current ZIP archive.
+
+
+        If the ZIP is ready, the response returns the ZIP file. If the ZIP is still being prepared,
+
+        the response returns a JSON message and the data broker should call `GET /data/download` again later.
+
+
+        The ZIP contains one CSV per selected list type. If a selected list has no new records,
+
+        the CSV contains only the header row. If previously delivered identifiers were removed,
+
+        the ZIP also includes one Removed CSV file.'
+      tags:
+      - Download
+      x-codeSamples:
+      - lang: Shell
+        label: curl
+        source: "curl -X GET \"https://api.drop.privacy.ca.gov/data/download\" \\\n  -H \"accept: application/zip, application/json\" \\\n  -H \"X-API-KEY: your-api-key-here\" \\\n  --output download.zip"
+      - lang: PowerShell
+        label: Invoke-WebRequest
+        source: "$apiKey = \"your-api-key-here\"\n$url = \"https://api.drop.privacy.ca.gov/data/download\"\n$headers = @{\n    \"X-API-KEY\" = $apiKey\n    \"Accept\"    = \"application/zip, application/json\"\n}\nInvoke-WebRequest -Uri $url -Headers $headers -OutFile \"download.zip\""
+      security:
+      - ApiKeyAuth: []
+      responses:
+        '200':
+          description: ZIP is ready and returned, or no new consumer request data or removed identifiers are available.
+          headers:
+            Content-Disposition:
+              description: Returned when the response body is a ZIP file.
+              schema:
+                type: string
+              example: attachment; filename="20260312_4821_DROP.zip"
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+              description: Binary ZIP archive containing CSV files.
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              examples:
+                noNewData:
+                  summary: No new data
+                  value:
+                    message: No new consumer request data or removed identifiers are available since your last completed download.
+        '202':
+          description: The request was received and the download package is being prepared.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: No download package is available yet. Your request was received, and the package is being created. Call GET /data/download again later.
+          headers:
+            Retry-After:
+              description: Suggested number of seconds to wait before calling GET /data/download again.
+              schema:
+                type: integer
+                minimum: 1
+              example: 60
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: Previous download is not complete.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: Complete the current batch or contact DROP support if a re-download is needed.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Unauthorized:
+      description: API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: API key is missing or invalid. Fix or regenerate the API key and try again.
+    Forbidden:
+      description: Broker is not eligible to access this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          examples:
+            forbidden:
+              summary: Not eligible
+              value:
+                message: Your account is not eligible for this operation. Resolve any account, registration, payment, or access issue and try again.
+            noSelectedLists:
+              summary: No selected lists
+              value:
+                message: No identifier list preferences are enabled. Select at least one list and try again.
+    ServerError:
+      description: Temporary system error. Retry later.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The system is temporarily unavailable. Try again later.
+    TooManyRequests:
+      description: Too many requests. Wait before retrying.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: Too many requests. Wait and try again.
+      headers:
+        Retry-After:
+          description: Suggested number of seconds to wait before retrying.
+          schema:
+            type: integer
+            minimum: 1
+          example: 30
+    NotFound:
+      description: Endpoint URL is wrong or resource path does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The requested endpoint was not found. Check the URL/path and try again.
+  schemas:
+    MessageResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Human-readable response message.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key issued through the Data Broker Portal. The key grants access only to the consumer deletion lists selected during setup.
+externalDocs:
+  description: Human-readable integration guide
+  url: ./docs.html
+x-tagGroups:
+- name: Core workflow
+  tags:
+  - Download
+  - Upload

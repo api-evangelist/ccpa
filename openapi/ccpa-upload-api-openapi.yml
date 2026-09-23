@@ -1,0 +1,396 @@
+openapi: 3.2.0
+info:
+  title: DROP Data Broker Upload API
+  version: 1.2.0
+  summary: Delete Act - Data Broker Integration API
+  description: 'The DROP (Delete Request and Opt-out Platform) Data Broker API enables
+
+    data brokers to integrate with DROP to programmatically retrieve consumer
+
+    deletion request data and report status updates.'
+servers:
+- url: https://api.drop.privacy.ca.gov
+  description: Production
+- url: https://api.drop.privacy.ca.gov/sandbox
+  description: Sandbox
+security:
+- ApiKeyAuth: []
+tags:
+- name: Upload
+  description: Submit new or amended status response files
+paths:
+  /data/upload:
+    post:
+      operationId: uploadData
+      summary: Upload new status response files
+      description: 'Submit new status responses.
+
+
+        One or more CSV response files may be uploaded in the same request.
+
+
+        Each CSV must:
+
+        - Use the header `Id,Status`
+
+        - Use a downloaded file name or allowed suffix pattern
+
+        - Contain status codes `2`, `3`, `4`, or `5`
+
+        - Be uploaded as a CSV file, not a ZIP archive
+
+
+        The files are sent as `multipart/form-data` with the field name `files`.
+
+        Accepted files are queued for validation. Full row-level validation may continue after the response is returned.'
+      tags:
+      - Upload
+      x-codeSamples:
+      - lang: Shell
+        label: curl
+        source: "curl -X POST \"https://api.drop.privacy.ca.gov/data/upload\" \\\n  -H \"accept: application/json\" \\\n  -H \"X-API-KEY: your-api-key-here\" \\\n  -F \"files=@20260312_4821_Email.csv;type=text/csv\""
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - files
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: One or more CSV response files. Each file must use a downloaded file name or allowed suffix pattern and must have `Id,Status` as the header row.
+            examples:
+              uploadEmail:
+                $ref: '#/components/examples/UploadEmailFile'
+      responses:
+        '202':
+          description: At least one file was accepted and queued for validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              examples:
+                accepted:
+                  $ref: '#/components/examples/UploadAcceptedResponse'
+                mixed:
+                  $ref: '#/components/examples/UploadMixedResponse'
+        '400':
+          description: Request is malformed or no files were accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              examples:
+                invalidHeader:
+                  $ref: '#/components/examples/UploadInvalidHeaderResponse'
+                duplicateFile:
+                  $ref: '#/components/examples/UploadDuplicateFileResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: No active download is waiting for responses.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: No active download is waiting for responses. Use GET /data/download to request or download a new ZIP file.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+  /data/amend:
+    post:
+      operationId: uploadAmend
+      summary: Correct or update previously submitted status responses
+      description: 'Correct or update previously submitted status responses.
+
+
+        One or more amended CSV response files may be uploaded in the same request.
+
+
+        The request format is identical to `/data/upload`. Use this endpoint when you need to correct or update a response that was already submitted.
+
+
+        Accepted files are queued for validation. Full row-level validation may continue after the response is returned.'
+      tags:
+      - Upload
+      x-codeSamples:
+      - lang: Shell
+        label: curl
+        source: "curl -X POST \"https://api.drop.privacy.ca.gov/data/amend\" \\\n  -H \"accept: application/json\" \\\n  -H \"X-API-KEY: your-api-key-here\" \\\n  -F \"files=@20260312_4821_Email.csv;type=text/csv\""
+      security:
+      - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+              - files
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                  description: One or more amended CSV response files. Same naming and schema requirements as the `/data/upload` endpoint.
+            examples:
+              amendEmail:
+                $ref: '#/components/examples/UploadEmailFile'
+      responses:
+        '202':
+          description: At least one file was accepted and queued for validation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              examples:
+                accepted:
+                  $ref: '#/components/examples/UploadAmendAcceptedResponse'
+                mixed:
+                  $ref: '#/components/examples/UploadMixedResponse'
+        '400':
+          description: Request is malformed or no files were accepted.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UploadResponse'
+              examples:
+                invalidHeader:
+                  $ref: '#/components/examples/UploadInvalidHeaderResponse'
+                duplicateFile:
+                  $ref: '#/components/examples/UploadDuplicateFileResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          description: The amend request cannot be processed in the current state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+              example:
+                message: The amend request cannot be processed in the current state.
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+        '500':
+          $ref: '#/components/responses/ServerError'
+components:
+  responses:
+    Unauthorized:
+      description: API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: API key is missing or invalid. Fix or regenerate the API key and try again.
+    Forbidden:
+      description: Broker is not eligible to access this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          examples:
+            forbidden:
+              summary: Not eligible
+              value:
+                message: Your account is not eligible for this operation. Resolve any account, registration, payment, or access issue and try again.
+            noSelectedLists:
+              summary: No selected lists
+              value:
+                message: No identifier list preferences are enabled. Select at least one list and try again.
+    TooManyRequests:
+      description: Too many requests. Wait before retrying.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: Too many requests. Wait and try again.
+      headers:
+        Retry-After:
+          description: Suggested number of seconds to wait before retrying.
+          schema:
+            type: integer
+            minimum: 1
+          example: 30
+    ServerError:
+      description: Temporary system error. Retry later.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The system is temporarily unavailable. Try again later.
+    NotFound:
+      description: Endpoint URL is wrong or resource path does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The requested endpoint was not found. Check the URL/path and try again.
+  schemas:
+    RejectedFileResult:
+      type: object
+      required:
+      - fileName
+      - message
+      properties:
+        fileName:
+          type: string
+          description: Name of the rejected file.
+          example: notes.txt
+        message:
+          type: string
+          description: Reason the file was rejected.
+          example: Only CSV files are accepted.
+    AcceptedFileResult:
+      type: object
+      required:
+      - fileName
+      - fileSizeBytes
+      properties:
+        fileName:
+          type: string
+          description: Name of the accepted CSV file.
+          example: 20260312_4821_Email.csv
+        fileSizeBytes:
+          type: integer
+          description: Size of the accepted file in bytes.
+          example: 2849112
+    MessageResponse:
+      type: object
+      required:
+      - message
+      properties:
+        message:
+          type: string
+          description: Human-readable response message.
+    UploadResponse:
+      type: object
+      description: Response returned after upload or amend files are accepted or rejected.
+      required:
+      - message
+      - acceptedCount
+      - rejectedCount
+      - accepted
+      - rejected
+      properties:
+        message:
+          type: string
+          description: Summary of the upload result.
+        acceptedCount:
+          type: integer
+          description: Number of files accepted for validation.
+          example: 1
+        rejectedCount:
+          type: integer
+          description: Number of files rejected before validation.
+          example: 0
+        accepted:
+          type: array
+          description: Files accepted for validation.
+          items:
+            $ref: '#/components/schemas/AcceptedFileResult'
+        rejected:
+          type: array
+          description: Files rejected before validation.
+          items:
+            $ref: '#/components/schemas/RejectedFileResult'
+  examples:
+    UploadInvalidHeaderResponse:
+      summary: Rejected upload with invalid CSV header
+      description: The CSV header was not exactly `Id,Status`.
+      value:
+        message: Upload request is invalid. Fix the rejected files and try again.
+        acceptedCount: 0
+        rejectedCount: 1
+        accepted: []
+        rejected:
+        - fileName: 20260312_4821_Email.csv
+          message: 'Invalid CSV header. Expected: Id,Status.'
+    UploadDuplicateFileResponse:
+      summary: Rejected duplicate file name
+      description: The same file name was already uploaded for the current download. Use a unique optional suffix.
+      value:
+        message: Upload request is invalid. Fix the rejected files and try again.
+        acceptedCount: 0
+        rejectedCount: 1
+        accepted: []
+        rejected:
+        - fileName: 20260312_4821_Email.csv
+          message: A file with this name was already uploaded for the current download. Use a unique suffix and try again
+    UploadAcceptedResponse:
+      summary: Accepted upload
+      description: DROP accepted the file and queued it for validation.
+      value:
+        message: Upload received. Accepted files were queued for validation.
+        acceptedCount: 1
+        rejectedCount: 0
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected: []
+    UploadAmendAcceptedResponse:
+      summary: Accepted amendment
+      description: DROP accepted the amended file and queued it for validation.
+      value:
+        message: Upload received. Accepted files were queued for validation.
+        acceptedCount: 1
+        rejectedCount: 0
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected: []
+    UploadEmailFile:
+      summary: Multipart upload example
+      description: Upload one or more CSV response files using a downloaded file name or allowed suffix pattern.
+      value:
+        files:
+        - '@20260312_4821_Email.csv'
+        - '@20260312_4821_Email_part01.csv'
+    UploadMixedResponse:
+      summary: Accepted and rejected files
+      description: One file was accepted and one file was rejected before validation.
+      value:
+        message: Upload received. Accepted files were queued for validation. Rejected files were not accepted.
+        acceptedCount: 1
+        rejectedCount: 1
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected:
+        - fileName: notes.txt
+          message: Only CSV files are accepted.
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+      description: API key issued through the Data Broker Portal. The key grants access only to the consumer deletion lists selected during setup.
+externalDocs:
+  description: Human-readable integration guide
+  url: ./docs.html
+x-tagGroups:
+- name: Core workflow
+  tags:
+  - Download
+  - Upload
