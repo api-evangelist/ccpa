@@ -1,6 +1,7 @@
 aid: ccpa
 url: https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml
 name: CCPA (California Consumer Privacy Act)
+kind: topic
 x-type: concept
 tags:
 - CPRA
@@ -22,15 +23,21 @@ tags_raw:
 - Regulation
 type: Index
 deliveryModel:
-  model: unknown
+  model: saas
+  license_evidence:
+    not_product:
+    - interactiveadvertisingbureau/global-privacy-platform
+    - privacycg/gpc-spec
   open_source: unknown
-  commercial: false
-  callable_host: false
-  label: Delivery model not determined — needs a product licence on record
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
   confidence: low
   source:
-  - repository-unlicensed
-  generated: '2026-08-28'
+  - openapi
+  - pricing
+  - repository-not-product
+  generated: '2026-09-25'
   method: derived
 accessModel:
   pricing: freemium
