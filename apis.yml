@@ -194,6 +194,9 @@ apis:
   - type: Portal
     url: https://databroker.drop.privacy.ca.gov/
 common:
+- type: CapabilityMap
+  url: capabilities/ccpa-capability-edges.yml
+  name: CCPA (California Consumer Privacy Act) Business Capability Map
 - type: VulnerabilityDisclosure
   url: security/ccpa-vulnerability-disclosure.yml
 - type: DomainSecurity

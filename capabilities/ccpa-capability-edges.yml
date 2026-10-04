@@ -1,0 +1,38 @@
+slug: ccpa
+provider: CCPA (California Consumer Privacy Act)
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 2
+edges:
+- tag: Download
+  spec_file: ccpa-download-api-openapi.yml
+  capability_id: BC-130.50
+  capability_id_l1: BC-130
+  capability_name: Privacy & Data Protection Management
+  confidence: 0.85
+  evidence: '"Request or download consumer deletion request data"; "DROP (Delete Request and Opt-out Platform)
+    Data Broker API enables data brokers to integrate with DROP to programmatically retrieve consumer
+    deletion request data"'
+  reason: The operation retrieves statutory consumer deletion (data-subject erasure) requests that a data
+    broker must process — squarely privacy and data-protection compliance, including data subject rights
+    handling.
+- tag: Upload
+  spec_file: ccpa-upload-api-openapi.yml
+  capability_id: BC-130.50
+  capability_id_l1: BC-130
+  capability_name: Privacy & Data Protection Management
+  confidence: 0.8
+  evidence: '"Upload new status response files"; "Correct or update previously submitted status responses"
+    for the "Delete Request and Opt-out Platform"'
+  reason: Uploading and amending status responses to regulator-mediated consumer deletion requests is
+    the reporting half of data-subject-rights compliance under CCPA/CPRA. File upload is the mechanism,
+    but the payload is privacy compliance evidence.
