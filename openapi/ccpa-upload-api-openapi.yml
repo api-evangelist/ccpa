@@ -192,21 +192,127 @@ paths:
         '500':
           $ref: '#/components/responses/ServerError'
 components:
+  examples:
+    UploadDuplicateFileResponse:
+      summary: Rejected duplicate file name
+      description: The same file name was already uploaded for the current download. Use a unique optional suffix.
+      value:
+        message: Upload request is invalid. Fix the rejected files and try again.
+        acceptedCount: 0
+        rejectedCount: 1
+        accepted: []
+        rejected:
+        - fileName: 20260312_4821_Email.csv
+          message: A file with this name was already uploaded for the current download. Use a unique suffix and try again
+    UploadEmailFile:
+      summary: Multipart upload example
+      description: Upload one or more CSV response files using a downloaded file name or allowed suffix pattern.
+      value:
+        files:
+        - '@20260312_4821_Email.csv'
+        - '@20260312_4821_Email_part01.csv'
+    UploadAmendAcceptedResponse:
+      summary: Accepted amendment
+      description: DROP accepted the amended file and queued it for validation.
+      value:
+        message: Upload received. Accepted files were queued for validation.
+        acceptedCount: 1
+        rejectedCount: 0
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected: []
+    UploadInvalidHeaderResponse:
+      summary: Rejected upload with invalid CSV header
+      description: The CSV header was not exactly `Id,Status`.
+      value:
+        message: Upload request is invalid. Fix the rejected files and try again.
+        acceptedCount: 0
+        rejectedCount: 1
+        accepted: []
+        rejected:
+        - fileName: 20260312_4821_Email.csv
+          message: 'Invalid CSV header. Expected: Id,Status.'
+    UploadAcceptedResponse:
+      summary: Accepted upload
+      description: DROP accepted the file and queued it for validation.
+      value:
+        message: Upload received. Accepted files were queued for validation.
+        acceptedCount: 1
+        rejectedCount: 0
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected: []
+    UploadMixedResponse:
+      summary: Accepted and rejected files
+      description: One file was accepted and one file was rejected before validation.
+      value:
+        message: Upload received. Accepted files were queued for validation. Rejected files were not accepted.
+        acceptedCount: 1
+        rejectedCount: 1
+        accepted:
+        - fileName: 20260312_4821_Email.csv
+          fileSizeBytes: 2849112
+        rejected:
+        - fileName: notes.txt
+          message: Only CSV files are accepted.
+  responses:
+    ServerError:
+      description: Temporary system error. Retry later.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The system is temporarily unavailable. Try again later.
+    NotFound:
+      description: Endpoint URL is wrong or resource path does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The requested endpoint was not found. Check the URL/path and try again.
+    Forbidden:
+      description: Broker is not eligible to access this operation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          examples:
+            forbidden:
+              summary: Not eligible
+              value:
+                message: Your account is not eligible for this operation. Resolve any account, registration, payment, or access issue and try again.
+            noSelectedLists:
+              summary: No selected lists
+              value:
+                message: No identifier list preferences are enabled. Select at least one list and try again.
+    TooManyRequests:
+      description: Too many requests. Wait before retrying.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: Too many requests. Wait and try again.
+      headers:
+        Retry-After:
+          description: Suggested number of seconds to wait before retrying.
+          schema:
+            type: integer
+            minimum: 1
+          example: 30
+    Unauthorized:
+      description: API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: API key is missing or invalid. Fix or regenerate the API key and try again.
   schemas:
-    RejectedFileResult:
-      type: object
-      required:
-      - fileName
-      - message
-      properties:
-        fileName:
-          type: string
-          description: Name of the rejected file.
-          example: notes.txt
-        message:
-          type: string
-          description: Reason the file was rejected.
-          example: Only CSV files are accepted.
     AcceptedFileResult:
       type: object
       required:
@@ -260,126 +366,20 @@ components:
           description: Files rejected before validation.
           items:
             $ref: '#/components/schemas/RejectedFileResult'
-  responses:
-    NotFound:
-      description: Endpoint URL is wrong or resource path does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: The requested endpoint was not found. Check the URL/path and try again.
-    ServerError:
-      description: Temporary system error. Retry later.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: The system is temporarily unavailable. Try again later.
-    Forbidden:
-      description: Broker is not eligible to access this operation.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          examples:
-            forbidden:
-              summary: Not eligible
-              value:
-                message: Your account is not eligible for this operation. Resolve any account, registration, payment, or access issue and try again.
-            noSelectedLists:
-              summary: No selected lists
-              value:
-                message: No identifier list preferences are enabled. Select at least one list and try again.
-    Unauthorized:
-      description: API key is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: API key is missing or invalid. Fix or regenerate the API key and try again.
-    TooManyRequests:
-      description: Too many requests. Wait before retrying.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: Too many requests. Wait and try again.
-      headers:
-        Retry-After:
-          description: Suggested number of seconds to wait before retrying.
-          schema:
-            type: integer
-            minimum: 1
-          example: 30
-  examples:
-    UploadInvalidHeaderResponse:
-      summary: Rejected upload with invalid CSV header
-      description: The CSV header was not exactly `Id,Status`.
-      value:
-        message: Upload request is invalid. Fix the rejected files and try again.
-        acceptedCount: 0
-        rejectedCount: 1
-        accepted: []
-        rejected:
-        - fileName: 20260312_4821_Email.csv
-          message: 'Invalid CSV header. Expected: Id,Status.'
-    UploadEmailFile:
-      summary: Multipart upload example
-      description: Upload one or more CSV response files using a downloaded file name or allowed suffix pattern.
-      value:
-        files:
-        - '@20260312_4821_Email.csv'
-        - '@20260312_4821_Email_part01.csv'
-    UploadAcceptedResponse:
-      summary: Accepted upload
-      description: DROP accepted the file and queued it for validation.
-      value:
-        message: Upload received. Accepted files were queued for validation.
-        acceptedCount: 1
-        rejectedCount: 0
-        accepted:
-        - fileName: 20260312_4821_Email.csv
-          fileSizeBytes: 2849112
-        rejected: []
-    UploadMixedResponse:
-      summary: Accepted and rejected files
-      description: One file was accepted and one file was rejected before validation.
-      value:
-        message: Upload received. Accepted files were queued for validation. Rejected files were not accepted.
-        acceptedCount: 1
-        rejectedCount: 1
-        accepted:
-        - fileName: 20260312_4821_Email.csv
-          fileSizeBytes: 2849112
-        rejected:
-        - fileName: notes.txt
-          message: Only CSV files are accepted.
-    UploadDuplicateFileResponse:
-      summary: Rejected duplicate file name
-      description: The same file name was already uploaded for the current download. Use a unique optional suffix.
-      value:
-        message: Upload request is invalid. Fix the rejected files and try again.
-        acceptedCount: 0
-        rejectedCount: 1
-        accepted: []
-        rejected:
-        - fileName: 20260312_4821_Email.csv
-          message: A file with this name was already uploaded for the current download. Use a unique suffix and try again
-    UploadAmendAcceptedResponse:
-      summary: Accepted amendment
-      description: DROP accepted the amended file and queued it for validation.
-      value:
-        message: Upload received. Accepted files were queued for validation.
-        acceptedCount: 1
-        rejectedCount: 0
-        accepted:
-        - fileName: 20260312_4821_Email.csv
-          fileSizeBytes: 2849112
-        rejected: []
+    RejectedFileResult:
+      type: object
+      required:
+      - fileName
+      - message
+      properties:
+        fileName:
+          type: string
+          description: Name of the rejected file.
+          example: notes.txt
+        message:
+          type: string
+          description: Reason the file was rejected.
+          example: Only CSV files are accepted.
   securitySchemes:
     ApiKeyAuth:
       type: apiKey

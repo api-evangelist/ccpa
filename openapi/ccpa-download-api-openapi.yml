@@ -105,14 +105,6 @@ paths:
           $ref: '#/components/responses/ServerError'
 components:
   responses:
-    NotFound:
-      description: Endpoint URL is wrong or resource path does not exist.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: The requested endpoint was not found. Check the URL/path and try again.
     ServerError:
       description: Temporary system error. Retry later.
       content:
@@ -121,6 +113,14 @@ components:
             $ref: '#/components/schemas/MessageResponse'
           example:
             message: The system is temporarily unavailable. Try again later.
+    NotFound:
+      description: Endpoint URL is wrong or resource path does not exist.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: The requested endpoint was not found. Check the URL/path and try again.
     Forbidden:
       description: Broker is not eligible to access this operation.
       content:
@@ -136,14 +136,6 @@ components:
               summary: No selected lists
               value:
                 message: No identifier list preferences are enabled. Select at least one list and try again.
-    Unauthorized:
-      description: API key is missing or invalid.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/MessageResponse'
-          example:
-            message: API key is missing or invalid. Fix or regenerate the API key and try again.
     TooManyRequests:
       description: Too many requests. Wait before retrying.
       content:
@@ -159,6 +151,14 @@ components:
             type: integer
             minimum: 1
           example: 30
+    Unauthorized:
+      description: API key is missing or invalid.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MessageResponse'
+          example:
+            message: API key is missing or invalid. Fix or regenerate the API key and try again.
   schemas:
     MessageResponse:
       type: object
