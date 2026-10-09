@@ -73,3 +73,22 @@ notes: >-
   The other surfaces this index tracks (the Global Privacy Control specification, the IAB
   Tech Lab Global Privacy Platform, the CPPA data broker registry CSVs, the statute text)
   are published at no cost and carry no plans.
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - subscription
+  units: []
+  plans:
+  - name: Annual data broker registration (2026)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Partial-year access fee (new brokers starting mid-2026)
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
