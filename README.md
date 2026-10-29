@@ -1,4 +1,4 @@
-# CCPA (ccpa)
+# ccpa
 
 <!-- API-EVANGELIST-PROVENANCE:BEGIN -->
 > ### About this repository
@@ -64,100 +64,32 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-The California Consumer Privacy Act (CCPA), amended by the California Privacy Rights Act (CPRA), is a state statute that grants California residents rights over their personal information: the right to know, delete, correct, opt-out of sale/sharing, limit use of sensitive personal information, and non-discrimination for exercising privacy rights. It is enforced by the California Privacy Protection Agency (CPPA) and the California Attorney General. Technical interoperability mechanisms include the Global Privacy Control (GPC) browser signal and the IAB Tech Lab US Privacy (USP) / Global Privacy Platform (GPP) signals for advertising technology. This index tracks the official regulatory resources, technical privacy signals, and commercial APIs that help businesses comply with CCPA/CPRA obligations.
+## ccpa on APIs.io
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/ccpa/refs/heads/main/apis.yml)
+Everything profiled for ccpa is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/ccpa/](https://apis.io/providers/ccpa/)** — or go straight to one of the APIs or properties below.
 
-## Scope
+### Published properties
 
-- **Type:** Index
-- **Position:** Consumer
-- **Access:** 3rd-Party
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
 
-## Tags:
+#### MCP servers (1)
 
- - Privacy, Compliance, Data Protection, Legal, California, CPRA, Regulation, Data Subject Rights
+Model Context Protocol servers that expose the API to agents.
 
-## Timestamps
+- [ccpa-mcp.yml](https://apis.io/servers/ccpa/ccpa-mcp-yml/)
 
-- **Created:** 2025-01-01
-- **Modified:** 2026-04-23
+## API Evangelist rating
 
-## APIs
+Not yet rated. See [apis.io/providers/ccpa/](https://apis.io/providers/ccpa/).
 
-### Global Privacy Control (GPC) Specification
-Global Privacy Control is a browser-level signal that communicates a user's opt-out preference to websites. The California Attorney General has affirmed that GPC must be treated as a valid CCPA "Do Not Sell or Share" opt-out request.
+## How this profile is made
 
-**Human URL:** [https://globalprivacycontrol.org/](https://globalprivacycontrol.org/)
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
 
-#### Tags:
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for ccpa: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
 
- - Browser Signal, Opt-Out, Standard
+## Open an issue
 
-#### Properties
-
-- [Website](https://globalprivacycontrol.org/)
-- [Specification](https://privacycg.github.io/gpc-spec/)
-- [SourceCode](https://github.com/privacycg/gpc-spec)
-
-### IAB Tech Lab Global Privacy Platform (GPP)
-The IAB Tech Lab Global Privacy Platform (GPP) is the successor to the US Privacy (USP) string. It provides a standardized way to communicate user consent and opt-out signals between publishers, consent management platforms, and adtech vendors for CCPA, CPRA, and other jurisdictions.
-
-**Human URL:** [https://iabtechlab.com/gpp/](https://iabtechlab.com/gpp/)
-
-#### Tags:
-
- - IAB, Consent, AdTech, Signals
-
-#### Properties
-
-- [Documentation](https://iabtechlab.com/gpp/)
-- [SourceCode](https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform)
-- [LegacySpec](https://github.com/InteractiveAdvertisingBureau/USPrivacy)
-
-### California Privacy Protection Agency (CPPA) Resources
-Official resources from the California Privacy Protection Agency, the body empowered by CPRA to implement, enforce, and publish regulations under the CCPA.
-
-**Human URL:** [https://cppa.ca.gov/](https://cppa.ca.gov/)
-
-#### Tags:
-
- - Regulation, Enforcement, Rulemaking
-
-#### Properties
-
-- [Website](https://cppa.ca.gov/)
-- [Regulations](https://cppa.ca.gov/regulations/)
-- [Enforcement](https://cppa.ca.gov/enforcement/)
-
-### California Data Broker Registry
-Official California Attorney General registry of data brokers required to register under Civil Code section 1798.99.80, providing a public list that consumers can use to submit opt-out requests.
-
-**Human URL:** [https://oag.ca.gov/data-brokers](https://oag.ca.gov/data-brokers)
-
-#### Tags:
-
- - Data Brokers, Registry
-
-#### Properties
-
-- [Registry](https://oag.ca.gov/data-brokers)
-- [Registration](https://oag.ca.gov/data-brokers/submit)
-
-## Common Properties
-
-- [Website](https://oag.ca.gov/privacy/ccpa)
-- [Documentation](https://oag.ca.gov/privacy/ccpa)
-- [Regulator](https://cppa.ca.gov/)
-- [StatuteText](https://leginfo.legislature.ca.gov/faces/codes_displayText.xhtml?lawCode=CIV&division=3.&title=1.81.5.&part=4.&chapter=&article=)
-- [Regulations](https://cppa.ca.gov/regulations/)
-- [Enforcement](https://cppa.ca.gov/enforcement/)
-- [DataBrokerRegistry](https://oag.ca.gov/data-brokers)
-- [GPC](https://globalprivacycontrol.org/)
-- [GPP](https://iabtechlab.com/gpp/)
-
-## Maintainers
-
-**FN:** Kin Lane
-
-**Email:** kin@apievangelist.com
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/ccpa/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
