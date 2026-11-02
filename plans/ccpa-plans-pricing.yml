@@ -1,0 +1,94 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: CCPA (California Consumer Privacy Act)
+providerId: ccpa
+api: ccpa:drop-data-broker-api
+created: '2026-05-04'
+modified: '2026-09-05'
+generated: '2026-09-05'
+method: searched
+source: >-
+  https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+description: >-
+  Cost of access to the CalPrivacy DROP Data Broker API. This artifact replaces a
+  2026-05-04 bulk-sweep scaffold that invented a Free/Pro tier ladder with a 1,000
+  request/month quota. There is no usage-priced plan ladder here: DROP is a statutory
+  compliance platform, and the "plan" is the mandatory annual data broker registration fee
+  set by the California Delete Act (Civil Code 1798.99.80 et seq.). Paying it is what
+  issues the API key.
+tags:
+  - CCPA
+  - CPRA
+  - Delete Act
+  - DROP
+  - Registration Fee
+pricing_model: statutory-registration-fee
+plan_count: 1
+plans:
+  - id: ccpa-drop-annual-registration
+    name: Annual data broker registration (2026)
+    type: mandatory
+    currency: USD
+    price: '6000.00'
+    billing_period: annual
+    prorated: false
+    refundable: false
+    payment_method: Credit card, paid inside the DROP portal.
+    surcharge: >-
+      Plus an associated third-party fee for processing electronic payments, not to
+      exceed 2.99%.
+    registration_window: >-
+      Data brokers must register with CalPrivacy annually between January 1 and January 31.
+    late_penalty: >-
+      A data broker that fails to register by January 31 may be liable for administrative
+      fines and costs in an administrative action or investigation brought by CalPrivacy.
+    who_must_pay: >-
+      All data brokers who operated in 2025 and those newly operating in 2026 must create
+      an account in DROP.
+    entitlements:
+      - A DROP Data Broker Portal account
+      - An API key for https://api.drop.privacy.ca.gov
+      - A sandbox API key for https://api.drop.privacy.ca.gov/sandbox
+      - >-
+        Access to the consumer deletion lists selected during setup
+        (NDZ, Email, Phone, MAID, NameVIN, CTVID)
+    quota: none
+    quota_note: >-
+      No request quota, no metered usage, no overage. Volume is a function of how many
+      California consumers submitted deletion requests, not of a purchased tier.
+    source: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+  - id: ccpa-drop-partial-year-access
+    name: Partial-year access fee (new brokers starting mid-2026)
+    type: mandatory-prorated-schedule
+    currency: USD
+    price_range: '500.00 - 6000.00'
+    billing_period: one-time-for-remainder-of-year
+    detail: >-
+      A sliding scale for brokers newly beginning operation during 2026, from $6,000 plus
+      the associated payment-processing fee in January down to $500 plus the associated
+      fee in December.
+    source: https://privacy.ca.gov/drop-for-data-brokers/account-creation-fees-and-annual-registration/
+notes: >-
+  The other surfaces this index tracks (the Global Privacy Control specification, the IAB
+  Tech Lab Global Privacy Platform, the CPPA data broker registry CSVs, the statute text)
+  are published at no cost and carry no plans.
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - subscription
+  units: []
+  plans:
+  - name: Annual data broker registration (2026)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Partial-year access fee (new brokers starting mid-2026)
+    access: other
+    model: unstated
+    model_how: derived
+    units: []
+    periods: []
