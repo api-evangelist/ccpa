@@ -258,6 +258,9 @@ artifacts:
   skills/ccpa-process-deletion-requests.md:
     method: generated
     evidence: declared in the artifact
+  sla/ccpa-sla.yml:
+    method: generated
+    evidence: declared in the artifact
   well-known/ccpa-gpc.json:
     method: unknown
     evidence: no authorship recorded

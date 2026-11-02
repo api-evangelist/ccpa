@@ -74,7 +74,7 @@ notes: >-
   Tech Lab Global Privacy Platform, the CPPA data broker registry CSVs, the statute text)
   are published at no cost and carry no plans.
 x-canonical:
-  generated: '2026-11-01'
+  generated: '2026-11-02'
   vocabulary: engine/economics/plans-canonical.yml
   models:
   - subscription
